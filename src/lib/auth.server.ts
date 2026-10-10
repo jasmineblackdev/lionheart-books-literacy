@@ -40,8 +40,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const identityToken = request.headers.get("x-lovable-identity-token");
   if (!identityToken) return null;
 
-  const jwksUrl = env.__LOVABLE_JWKS_URL;
+  const jwksUrl = env["__LOVABLE_JWKS_URL"];
   if (!jwksUrl) return null;
 
-  return verifyIdentityToken(identityToken, jwksUrl, env.__LOVABLE_PROJECT_ID);
+  return verifyIdentityToken(identityToken, jwksUrl, env["__LOVABLE_PROJECT_ID"]);
 }
