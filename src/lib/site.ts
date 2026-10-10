@@ -1,16 +1,16 @@
-import abcCover from "@/assets/abc-cover.jpg.asset.json";
-import cursiveCover from "@/assets/cursive-cover.jpg.asset.json";
-import guideCover from "@/assets/field-guide-cover.jpg.asset.json";
-import abcAlligator from "@/assets/abc-alligator.jpg.asset.json";
-import abcLion from "@/assets/abc-lion.jpg.asset.json";
-import abcZebra from "@/assets/abc-zebra.jpg.asset.json";
-import curRory from "@/assets/cursive-meet-rory.jpg.asset.json";
-import curI from "@/assets/cursive-letter-i.jpg.asset.json";
-import curA from "@/assets/cursive-capital-a.jpg.asset.json";
-import curAlpha from "@/assets/cursive-alphabet.jpg.asset.json";
-import guidePages from "@/assets/field-guide-pages.jpg.asset.json";
-import sampleAbc from "@/assets/sample-abc.pdf.asset.json";
-import sampleCursive from "@/assets/sample-cursive.pdf.asset.json";
+import abcCover from "@/assets/abc-cover.jpg";
+import cursiveCover from "@/assets/cursive-cover.jpg";
+import guideCover from "@/assets/field-guide-cover.jpg";
+import abcAlligator from "@/assets/abc-alligator.jpg";
+import abcLion from "@/assets/abc-lion.jpg";
+import abcZebra from "@/assets/abc-zebra.jpg";
+import curRory from "@/assets/cursive-meet-rory.jpg";
+import curI from "@/assets/cursive-letter-i.jpg";
+import curA from "@/assets/cursive-capital-a.jpg";
+import curAlpha from "@/assets/cursive-alphabet.jpg";
+import guidePages from "@/assets/field-guide-pages.jpg";
+import sampleAbc from "@/assets/sample-abc.pdf";
+import sampleCursive from "@/assets/sample-cursive.pdf";
 
 export const SITE_URL = "https://lionheart-books-literacy.lovable.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
@@ -66,15 +66,15 @@ export const books: [Book, Book, Book] = [
       "Simple, repeatable routine: color, trace, say it out loud",
     ],
     price: "$9.99",
-    cover: abcCover.url,
+    cover: abcCover,
     amazon: amazonSearch("ABC Animal Adventure J. B. Lionheart"),
     previews: [
-      { src: abcAlligator.url, alt: "Sample page: A is for Alligator, with a dotted letter Aa, an alligator to color and the word alligator to trace" },
-      { src: abcLion.url, alt: "Sample page: L is for Lion, with a dotted letter Ll, a cartoon lion to color and the word lion to trace" },
-      { src: abcZebra.url, alt: "Sample page: Z is for Zebra, with a dotted letter Zz, a zebra to color and the word zebra to trace" },
+      { src: abcAlligator, alt: "Sample page: A is for Alligator, with a dotted letter Aa, an alligator to color and the word alligator to trace" },
+      { src: abcLion, alt: "Sample page: L is for Lion, with a dotted letter Ll, a cartoon lion to color and the word lion to trace" },
+      { src: abcZebra, alt: "Sample page: Z is for Zebra, with a dotted letter Zz, a zebra to color and the word zebra to trace" },
     ],
     sample: {
-      url: sampleAbc.url,
+      url: sampleAbc,
       label: "ABC Animal Adventure sample pages (PDF, 5 pages)",
       contents: "A name page with how-to-use steps plus A is for Alligator, L is for Lion and Z is for Zebra.",
     },
@@ -112,15 +112,15 @@ export const books: [Book, Book, Book] = [
     ],
     price: "$12.99",
     pages: "128 pages",
-    cover: cursiveCover.url,
+    cover: cursiveCover,
     amazon: amazonSearch("Cursive Safari J. B. Lionheart"),
     previews: [
-      { src: curI.url, alt: "Cursive Safari page: Letter i with stroke steps, a start dot and tracing rows" },
-      { src: curA.url, alt: "Cursive Safari page: Capital A with stroke steps, tracing rows and the sentence An antelope is fast" },
-      { src: curAlpha.url, alt: "Cursive Safari reference page showing the full lowercase and capital cursive alphabet" },
+      { src: curI, alt: "Cursive Safari page: Letter i with stroke steps, a start dot and tracing rows" },
+      { src: curA, alt: "Cursive Safari page: Capital A with stroke steps, tracing rows and the sentence An antelope is fast" },
+      { src: curAlpha, alt: "Cursive Safari reference page showing the full lowercase and capital cursive alphabet" },
     ],
     sample: {
-      url: sampleCursive.url,
+      url: sampleCursive,
       label: "Cursive Safari sample pages (PDF, 6 pages)",
       contents: "Meet Rory, Letter i, Join it: i, Capital A and the full cursive alphabet reference.",
     },
@@ -154,10 +154,10 @@ export const books: [Book, Book, Book] = [
       "Pairs well with habitat and animal science units",
       "Answer key included for seek-and-find challenges",
     ],
-    cover: guideCover.url,
+    cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),
     previews: [
-      { src: guidePages.url, alt: "Three Field Guide pages: a realistic lion, a leopard on a branch and an octopus, each with a field fact and challenge box" },
+      { src: guidePages, alt: "Three Field Guide pages: a realistic lion, a leopard on a branch and an octopus, each with a field fact and challenge box" },
     ],
     faqs: [
       { q: "Are the animals cartoon or realistic?", a: "Realistic line drawings of 50 real animals from 7 habitats." },
@@ -166,7 +166,7 @@ export const books: [Book, Book, Book] = [
   },
 ];
 
-export const rory = curRory.url;
+export const rory = curRory;
 export const getBook = (slug: string) => books.find((b) => b.slug === slug);
 
 export const generalFaqs = [

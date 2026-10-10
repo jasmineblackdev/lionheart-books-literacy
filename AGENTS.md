@@ -15,3 +15,4 @@
 - Suggestion tables have RLS on with no public policies; all reads/writes go through server functions using the admin client after validation, so visitors can never read submissions.
 - The admin review page authorizes by Lovable workspace identity userId found in the site_admins table; never by name or email.
 - Use real cover/interior artwork from the uploaded PDFs only; never generated substitutes for product art.
+- Book images and sample PDFs are real files in src/assets imported through Vite (not CDN pointers), so the site also works when hosted outside Lovable (e.g. Vercel).
