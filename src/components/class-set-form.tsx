@@ -10,7 +10,7 @@ export function ClassSetForm() {
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, string>;
+    const d = Object.fromEntries(new FormData(e.currentTarget)) as { name?: string; org?: string; email?: string; quantity?: string; message?: string };
     const errs: Record<string, string> = {};
     if (!d.name?.trim()) errs.name = "Please enter your name.";
     if (!d.org?.trim()) errs.org = "Please enter your school or organization.";
