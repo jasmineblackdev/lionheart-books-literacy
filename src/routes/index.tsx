@@ -37,7 +37,7 @@ function Index() {
             <Link to="/teachers" className="btn btn-outline">Get Free Sample Pages</Link>
           </div>
         </div>
-        <div className="relative mx-auto h-[340px] w-full max-w-md sm:h-[420px]" aria-hidden>
+        <div className="relative mx-auto h-[270px] w-full max-w-md sm:h-[420px]" aria-hidden>
           <img src={books[0].cover} alt="" width={621} height={810} className="absolute left-0 top-10 w-[48%] -rotate-6 rounded-lg shadow-lift" />
           <img src={books[2].cover} alt="" width={621} height={810} className="absolute right-0 top-10 w-[48%] rotate-6 rounded-lg shadow-lift" />
           <img src={books[1].cover} alt="" width={621} height={810} className="absolute left-1/2 top-0 w-[54%] -translate-x-1/2 rounded-lg shadow-lift" />
