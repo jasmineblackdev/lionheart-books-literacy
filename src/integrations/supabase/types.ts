@@ -14,7 +14,60 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      book_suggestions: {
+        Row: {
+          category: string
+          created_at: string
+          email: string | null
+          id: string
+          idea: string | null
+          intended_audience: string
+          ip_hash: string | null
+          marketing_consent: boolean
+          status: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          idea?: string | null
+          intended_audience: string
+          ip_hash?: string | null
+          marketing_consent?: boolean
+          status?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          email?: string | null
+          id?: string
+          idea?: string | null
+          intended_audience?: string
+          ip_hash?: string | null
+          marketing_consent?: boolean
+          status?: string
+        }
+        Relationships: []
+      }
+      site_admins: {
+        Row: {
+          created_at: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
