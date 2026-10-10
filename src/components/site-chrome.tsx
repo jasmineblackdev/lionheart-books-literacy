@@ -6,6 +6,7 @@ const nav = [
   { label: "Home", to: "/" as const },
   { label: "Explore the Books", to: "/" as const, hash: "books" },
   { label: "For Teachers & Schools", to: "/teachers" as const },
+  { label: "Suggest a Book", to: "/suggest-a-book" as const },
   { label: "About", to: "/" as const, hash: "about" },
   { label: "Contact", to: "/" as const, hash: "contact" },
 ];
@@ -18,7 +19,7 @@ export function SiteHeader() {
         <Link to="/" className="min-w-0 font-display text-xl font-bold text-primary">
           <span className="truncate">J. B. Lionheart <span className="text-terracotta">Books</span></span>
         </Link>
-        <nav aria-label="Main" className="hidden lg:block">
+        <nav aria-label="Main" className="hidden xl:block">
           <ul className="flex gap-6 font-semibold">
             {nav.map((n) => (
               <li key={n.label}>
@@ -28,7 +29,7 @@ export function SiteHeader() {
           </ul>
         </nav>
         <button
-          className="btn btn-outline px-4 py-2 text-base lg:hidden"
+          className="btn btn-outline px-4 py-2 text-base xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
           onClick={() => setOpen((o) => !o)}
@@ -37,7 +38,7 @@ export function SiteHeader() {
         </button>
       </div>
       {open && (
-        <nav id="mobile-nav" aria-label="Mobile" className="border-t px-5 pb-4 lg:hidden">
+        <nav id="mobile-nav" aria-label="Mobile" className="border-t px-5 pb-4 xl:hidden">
           <ul className="flex flex-col">
             {nav.map((n) => (
               <li key={n.label}>
@@ -76,6 +77,7 @@ export function SiteFooter() {
           <a href={`mailto:${EMAIL}`} className="mt-3 inline-block font-bold underline underline-offset-4">{EMAIL}</a>
           <ul className="mt-4 space-y-2 opacity-90">
             <li><Link to="/teachers" className="hover:underline">Teachers & Schools</Link></li>
+            <li><Link to="/suggest-a-book" className="hover:underline">Suggest a Book</Link></li>
             <li><Link to="/privacy" className="hover:underline">Privacy policy</Link></li>
           </ul>
         </div>

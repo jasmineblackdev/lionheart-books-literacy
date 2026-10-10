@@ -11,7 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as SuggestABookRouteImport } from './routes/suggest-a-book'
 import { Route as TeachersRouteImport } from './routes/teachers'
+import { Route as AdminSuggestionsRouteImport } from './routes/admin.suggestions'
 import { Route as BooksSlugRouteImport } from './routes/books.$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -24,9 +26,19 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SuggestABookRoute = SuggestABookRouteImport.update({
+  id: '/suggest-a-book',
+  path: '/suggest-a-book',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeachersRoute = TeachersRouteImport.update({
   id: '/teachers',
   path: '/teachers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSuggestionsRoute = AdminSuggestionsRouteImport.update({
+  id: '/admin/suggestions',
+  path: '/admin/suggestions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BooksSlugRoute = BooksSlugRouteImport.update({
@@ -38,34 +50,61 @@ const BooksSlugRoute = BooksSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
+  '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
+  '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/privacy': typeof PrivacyRoute
+  '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/privacy' | '/teachers' | '/books/$slug'
+  fullPaths:
+    | '/'
+    | '/privacy'
+    | '/suggest-a-book'
+    | '/teachers'
+    | '/admin/suggestions'
+    | '/books/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/privacy' | '/teachers' | '/books/$slug'
-  id: '__root__' | '/' | '/privacy' | '/teachers' | '/books/$slug'
+  to:
+    | '/'
+    | '/privacy'
+    | '/suggest-a-book'
+    | '/teachers'
+    | '/admin/suggestions'
+    | '/books/$slug'
+  id:
+    | '__root__'
+    | '/'
+    | '/privacy'
+    | '/suggest-a-book'
+    | '/teachers'
+    | '/admin/suggestions'
+    | '/books/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PrivacyRoute: typeof PrivacyRoute
+  SuggestABookRoute: typeof SuggestABookRoute
   TeachersRoute: typeof TeachersRoute
+  AdminSuggestionsRoute: typeof AdminSuggestionsRoute
   BooksSlugRoute: typeof BooksSlugRoute
 }
 
@@ -85,11 +124,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/suggest-a-book': {
+      id: '/suggest-a-book'
+      path: '/suggest-a-book'
+      fullPath: '/suggest-a-book'
+      preLoaderRoute: typeof SuggestABookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/teachers': {
       id: '/teachers'
       path: '/teachers'
       fullPath: '/teachers'
       preLoaderRoute: typeof TeachersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/suggestions': {
+      id: '/admin/suggestions'
+      path: '/admin/suggestions'
+      fullPath: '/admin/suggestions'
+      preLoaderRoute: typeof AdminSuggestionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/books/$slug': {
@@ -105,7 +158,9 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PrivacyRoute: PrivacyRoute,
+  SuggestABookRoute: SuggestABookRoute,
   TeachersRoute: TeachersRoute,
+  AdminSuggestionsRoute: AdminSuggestionsRoute,
   BooksSlugRoute: BooksSlugRoute,
 }
 export const routeTree = rootRouteImport
