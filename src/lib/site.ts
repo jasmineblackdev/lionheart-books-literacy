@@ -13,8 +13,7 @@ import sampleAbc from "@/assets/sample-abc.pdf.asset.json";
 import sampleCursive from "@/assets/sample-cursive.pdf.asset.json";
 
 export const SITE_URL = "https://lionheart-books-literacy.lovable.app";
-// TODO(owner): replace with the real contact email.
-export const EMAIL = "hello@colortraceroar.com";
+export const EMAIL = "jblionheartbooks@gmail.com";
 
 // TODO(owner): swap these Amazon search links for each book's exact listing URL.
 const amazonSearch = (q: string) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
