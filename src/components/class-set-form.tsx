@@ -11,11 +11,11 @@ export function ClassSetForm() {
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const d = Object.fromEntries(new FormData(e.currentTarget)) as { name?: string; org?: string; email?: string; quantity?: string; message?: string };
-    const errs: Record<string, string> = {};
-    if (!d.name?.trim()) errs.name = "Please enter your name.";
-    if (!d.org?.trim()) errs.org = "Please enter your school or organization.";
-    if (!emailRe.test(d.email ?? "")) errs.email = "Please enter a valid email address.";
-    if (!d.quantity || Number(d.quantity) < 1) errs.quantity = "Please enter an approximate quantity.";
+    const errs: { [k: string]: string } = {};
+    if (!d.name?.trim()) errs["name"] = "Please enter your name.";
+    if (!d.org?.trim()) errs["org"] = "Please enter your school or organization.";
+    if (!emailRe.test(d.email ?? "")) errs["email"] = "Please enter a valid email address.";
+    if (!d.quantity || Number(d.quantity) < 1) errs["quantity"] = "Please enter an approximate quantity.";
     setErrors(errs);
     if (Object.keys(errs).length) {
       setStatus("error");

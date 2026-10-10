@@ -22,7 +22,7 @@ export function SiteHeader() {
           <ul className="flex gap-6 font-semibold">
             {nav.map((n) => (
               <li key={n.label}>
-                <Link to={n.to} hash={n.hash} className="hover:text-terracotta">{n.label}</Link>
+                <Link to={n.to} {...(n.hash ? { hash: n.hash } : {})} className="hover:text-terracotta">{n.label}</Link>
               </li>
             ))}
           </ul>
@@ -41,7 +41,7 @@ export function SiteHeader() {
           <ul className="flex flex-col">
             {nav.map((n) => (
               <li key={n.label}>
-                <Link to={n.to} hash={n.hash} onClick={() => setOpen(false)} className="block py-3 text-lg font-semibold">
+                <Link to={n.to} {...(n.hash ? { hash: n.hash } : {})} onClick={() => setOpen(false)} className="block py-3 text-lg font-semibold">
                   {n.label}
                 </Link>
               </li>
