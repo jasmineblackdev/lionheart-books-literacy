@@ -73,7 +73,7 @@ function decodeJWTPayload(token: string): IdentityClaims | null {
   const parts = token.split(".");
   if (parts.length !== 3) return null;
   try {
-    const payloadJson = new TextDecoder().decode(base64UrlDecode(parts[1]));
+    const payloadJson = new TextDecoder().decode(base64UrlDecode(parts[1] ?? ""));
     return JSON.parse(payloadJson) as IdentityClaims;
   } catch {
     return null;
@@ -133,7 +133,7 @@ async function verifySignatureWithJwk(token: string, jwk: JWK): Promise<boolean>
   if (parts.length !== 3) return false;
 
   const signedContent = new TextEncoder().encode(`${parts[0]}.${parts[1]}`);
-  const signature = base64UrlDecode(parts[2]);
+  const signature = base64UrlDecode(parts[2] ?? "");
 
   let cryptoKey: CryptoKey;
   try {
