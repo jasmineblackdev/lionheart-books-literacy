@@ -124,6 +124,20 @@ function Index() {
         </p>
       </section>
 
+      <section className="mx-auto max-w-6xl px-5 pb-16">
+        <div className="card-soft grid items-center gap-8 bg-secondary p-8 md:grid-cols-[auto_minmax(0,1fr)] md:p-12">
+          <img src={books[2].cover} alt="" width={621} height={810} loading="lazy" className="mx-auto w-32 -rotate-3 rounded-lg shadow-lift md:w-40" />
+          <div>
+            <p className="eyebrow">Your ideas matter</p>
+            <h2 className="mt-2 text-4xl font-bold">Help Us Choose Our Next Adventure!</h2>
+            <p className="mt-3 max-w-2xl text-lg">
+              Your ideas help inspire our next books! Tell us what you'd love to see in future Lionheart books, from new coloring adventures to handwriting activities, puzzles, and educational discoveries.
+            </p>
+            <Link to="/suggest-a-book" className="btn btn-primary mt-6">Suggest a Book</Link>
+          </div>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-3xl px-5 pb-20">
         <h2 className="text-center text-4xl font-bold">Questions</h2>
         <div className="mt-8">

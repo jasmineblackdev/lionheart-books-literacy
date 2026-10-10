@@ -174,6 +174,7 @@ export const generalFaqs = [
   { q: "Which book should I start with?", a: "Ages 3–6: ABC Animal Adventure. Grades 2–4 learning cursive: Cursive Safari. Ages 6–10 who love animals: Rory's Safari Field Guide." },
   { q: "Where can I buy the books?", a: "All three books are sold on Amazon. Each book card has its own Amazon button." },
   { q: "Are the sample pages really free?", a: "Yes. The sample PDFs may be printed and copied freely for home or classroom use. They are not for resale." },
+  { q: "Can I suggest an idea for a future book?", a: "Yes! Use the Suggest a Book page. No email is needed, and sharing one doesn't sign you up for anything." },
   { q: "Do you offer class sets for schools?", a: "You can send a class-set inquiry with your quantity. We'll reply with options; pricing depends on the order." },
 ];
 
