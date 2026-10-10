@@ -62,7 +62,7 @@ function Index() {
             <img key={p.src} src={p.src} alt={p.alt} width={935} height={1210} loading="lazy" className="card-soft aspect-[612/792] w-full object-cover p-0" />
           ))}
         </div>
-        <img src={books[2].previews[0].src} alt={books[2].previews[0].alt} width={1000} height={450} loading="lazy" className="card-soft mt-4 w-full" />
+        <img src={books[2].previews[0]?.src} alt={books[2].previews[0]?.alt ?? ""} width={1000} height={450} loading="lazy" className="card-soft mt-4 w-full" />
       </section>
 
       <section className="bg-secondary px-5 py-16">
