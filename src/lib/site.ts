@@ -40,7 +40,7 @@ export type Book = {
   faqs: { q: string; a: string }[];
 };
 
-export const books: Book[] = [
+export const books: [Book, Book, Book] = [
   {
     slug: "abc-animal-adventure",
     title: "Color, Trace & Roar! ABC Animal Adventure",
