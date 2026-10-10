@@ -58,7 +58,7 @@ function Index() {
         <p className="eyebrow">Real pages</p>
         <h2 className="mt-2 text-4xl font-bold">Peek inside the books</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          {[books[0].previews[1], books[1].previews[0], books[1].previews[1], books[0].previews[0]].map((p) => (
+          {[books[0].previews[1], books[1].previews[0], books[1].previews[1], books[0].previews[0]].filter((p) => p !== undefined).map((p) => (
             <img key={p.src} src={p.src} alt={p.alt} width={935} height={1210} loading="lazy" className="card-soft aspect-[612/792] w-full object-cover p-0" />
           ))}
         </div>
