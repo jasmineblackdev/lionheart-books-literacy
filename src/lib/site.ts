@@ -161,7 +161,7 @@ export const books: [Book, Book, Book] = [
       "Answer key included for seek-and-find challenges",
     ],
     price: "$10.99",
-    paperbackAvailable: false,
+    paperbackAvailable: true,
     digital: { price: "$6.99", url: "https://payhip.com/b/fNdyi" },
     cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),
@@ -180,7 +180,7 @@ export const getBook = (slug: string) => books.find((b) => b.slug === slug);
 
 export const generalFaqs = [
   { q: "Which book should I start with?", a: "Ages 3–6: ABC Animal Adventure. Grades 2–4 learning cursive: Cursive Safari. Ages 6–10 who love animals: Rory's Safari Field Guide." },
-  { q: "Where can I buy the books?", a: "ABC Animal Adventure and Cursive Safari paperbacks are sold on Amazon. Rory's Safari Field Guide paperback is coming soon to Amazon. All three books are available as digital PDFs on Payhip." },
+  { q: "Where can I buy the books?", a: "All three paperbacks are sold on Amazon. All three books are also available as digital PDFs on Payhip." },
   { q: "Is there a digital version?", a: "Yes. Each book is available as a printable PDF you can use at home or on a tablet with a stylus. A digital copy is licensed for one household or one classroom. Please don't share or resell it." },
   { q: "Are the sample pages really free?", a: "Yes. The sample PDFs may be printed and copied freely for home or classroom use. They are not for resale." },
   { q: "Can I suggest an idea for a future book?", a: "Yes! Use the Suggest a Book page. No email is needed, and sharing one doesn't sign you up for anything." },
