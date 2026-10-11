@@ -19,7 +19,7 @@ function Privacy() {
       <h2 className="pt-4 text-2xl font-semibold">Children's privacy</h2>
       <p>
         This site is intended for parents, teachers and caregivers. We do not knowingly collect
-        personal information from children under 13; if you are under 13, please ask a grown-up to
+        personal information from children under 13. If you are under 13, please ask a grown-up to
         send a suggestion for you.
       </p>
       <h2 className="pt-4 text-2xl font-semibold">Book suggestions</h2>
@@ -29,6 +29,7 @@ function Privacy() {
       <h2 className="pt-4 text-2xl font-semibold">Class-set inquiries</h2>
       <p>The class-set inquiry form does not send data to our servers. It opens your own email app with your details filled in, and you choose whether to send it.</p>
       <p>"Buy on Amazon" links take you to Amazon, which has its own privacy policy.</p>
+       <p>Digital purchases are processed by Payhip; their privacy policy applies to checkout.</p>
       <p>Questions? Email <a href={`mailto:${EMAIL}`} className="font-bold underline">{EMAIL}</a>.</p>
     </section>
   );

@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { AmazonButton, BookCard, Faq } from "@/components/book-bits";
+import { BookCard, Faq, PurchaseButtons } from "@/components/book-bits";
 import { books, getBook, pageHead, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/books/$slug")({
@@ -52,13 +52,12 @@ function BookPage() {
           {b.pages && <p className="mt-4 text-sm text-muted-foreground">{b.pages}</p>}
           {b.price && (
             <p className="mt-3 font-display text-3xl font-bold">
-              {b.price}
-              <span className="ml-2 text-base font-normal text-muted-foreground">on Amazon</span>
+              Paperback {b.price}
             </p>
           )}
-          <AmazonButton book={b} className="mt-6 w-full sm:w-auto" />
+          <div className="mt-6"><PurchaseButtons book={b} /></div>
           {b.sample && (
-            <a href={b.sample.url} download className="btn btn-outline mt-3 w-full sm:ml-3 sm:w-auto">Download free sample pages</a>
+            <a href={b.sample.url} download className="btn btn-outline mt-3 w-full sm:w-auto">Download free sample pages</a>
           )}
           <h2 className="mt-10 text-2xl font-semibold">What's inside</h2>
           <ul className="mt-3 space-y-2">
@@ -90,7 +89,7 @@ function BookPage() {
       <section className="mx-auto max-w-3xl px-5 pb-14">
         <h2 className="text-3xl font-bold">Questions about {b.short}</h2>
         <div className="mt-6"><Faq items={b.faqs} /></div>
-        <div className="mt-8 text-center"><AmazonButton book={b} /></div>
+        <div className="mx-auto mt-8 max-w-xl"><PurchaseButtons book={b} /></div>
       </section>
 
       <section className="bg-secondary px-5 py-14">

@@ -12,7 +12,7 @@ import guidePages from "@/assets/field-guide-pages.jpg";
 import sampleAbc from "@/assets/sample-abc.pdf";
 import sampleCursive from "@/assets/sample-cursive.pdf";
 
-export const SITE_URL = "https://lionheart-books-literacy.lovable.app";
+export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
 
 // TODO(owner): swap these Amazon search links for each book's exact listing URL.
@@ -31,6 +31,8 @@ export type Book = {
   parentBenefits: string[];
   teacherBenefits: string[];
   price?: string;
+  paperbackAvailable: boolean;
+  digital: { price: string; url: string };
   pages?: string;
   cover: string;
   amazon: string;
@@ -66,6 +68,8 @@ export const books: [Book, Book, Book] = [
       "Simple, repeatable routine: color, trace, say it out loud",
     ],
     price: "$9.99",
+    paperbackAvailable: true,
+    digital: { price: "$5.99", url: "https://payhip.com/b/heOAD" },
     cover: abcCover,
     amazon: amazonSearch("ABC Animal Adventure J. B. Lionheart"),
     previews: [
@@ -111,6 +115,8 @@ export const books: [Book, Book, Book] = [
       "A full cursive alphabet reference page",
     ],
     price: "$12.99",
+    paperbackAvailable: true,
+    digital: { price: "$7.99", url: "https://payhip.com/b/qaUHk" },
     pages: "128 pages",
     cover: cursiveCover,
     amazon: amazonSearch("Cursive Safari J. B. Lionheart"),
@@ -155,6 +161,8 @@ export const books: [Book, Book, Book] = [
       "Answer key included for seek-and-find challenges",
     ],
     price: "$10.99",
+    paperbackAvailable: false,
+    digital: { price: "$6.99", url: "https://payhip.com/b/fNdyi" },
     cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),
     previews: [
@@ -173,6 +181,7 @@ export const getBook = (slug: string) => books.find((b) => b.slug === slug);
 export const generalFaqs = [
   { q: "Which book should I start with?", a: "Ages 3–6: ABC Animal Adventure. Grades 2–4 learning cursive: Cursive Safari. Ages 6–10 who love animals: Rory's Safari Field Guide." },
   { q: "Where can I buy the books?", a: "All three books are sold on Amazon. Each book card has its own Amazon button." },
+  { q: "Is there a digital version?", a: "Yes. Each book is available as a printable PDF you can use at home or on a tablet with a stylus. A digital copy is licensed for one household or one classroom. Please don't share or resell it." },
   { q: "Are the sample pages really free?", a: "Yes. The sample PDFs may be printed and copied freely for home or classroom use. They are not for resale." },
   { q: "Can I suggest an idea for a future book?", a: "Yes! Use the Suggest a Book page. No email is needed, and sharing one doesn't sign you up for anything." },
   { q: "Do you offer class sets for schools?", a: "You can send a class-set inquiry with your quantity. We'll reply with options; pricing depends on the order." },

@@ -9,6 +9,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        bookAmazon: "rounded-full bg-accent font-display font-semibold text-accent-foreground shadow-soft hover:bg-accent/90",
+        bookDigital: "rounded-full border-2 border-primary font-display font-semibold text-primary hover:bg-secondary",
+        bookUnavailable: "rounded-full bg-unavailable font-display font-semibold text-unavailable-foreground disabled:opacity-100",
         default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
@@ -18,6 +21,7 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
+        purchase: "h-auto min-h-14 px-3 py-3 text-base whitespace-normal text-center",
         default: "h-9 px-4 py-2",
         sm: "h-8 rounded-md px-3 text-xs",
         lg: "h-10 rounded-md px-8",
