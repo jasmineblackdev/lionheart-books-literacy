@@ -3,8 +3,14 @@ import type { Book } from "@/lib/site";
 
 export function AmazonButton({ book, className = "" }: { book: Book; className?: string }) {
   return (
-    <a href={book.amazon} target="_blank" rel="noopener noreferrer" className={`btn btn-gold ${className}`}>
-      Buy {book.short} on Amazon
+    <a
+      href={book.amazon}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`btn btn-gold ${className}`}
+      aria-label={`Buy ${book.short} on Amazon`}
+    >
+      Buy on Amazon
     </a>
   );
 }
