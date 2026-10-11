@@ -34,7 +34,7 @@ export function BookCard({ book }: { book: Book }) {
           ))}
         </ul>
         {book.price && (
-          <p className="mt-5 font-display text-xl font-semibold">
+          <p className="mt-auto pt-6 font-display text-xl font-semibold">
             {book.price}
             <span className="ml-1 text-sm font-normal text-muted-foreground">on Amazon</span>
           </p>
