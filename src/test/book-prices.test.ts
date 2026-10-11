@@ -18,9 +18,9 @@ describe("book prices shown to shoppers", () => {
     expect(getBook("cursive-safari")?.paperbackAvailable).toBe(true);
   });
 
-  it("offers the Field Guide as a $6.99 digital PDF without an available paperback", () => {
+  it("offers the Field Guide as a $6.99 digital PDF with paperback available", () => {
     expect(getBook("rorys-safari-field-guide")?.digital).toEqual({ price: "$6.99", url: "https://payhip.com/b/fNdyi" });
-    expect(getBook("rorys-safari-field-guide")?.paperbackAvailable).toBe(false);
+    expect(getBook("rorys-safari-field-guide")?.paperbackAvailable).toBe(true);
   });
 
   it("uses the Vercel domain and each page's own path for canonical and sharing URLs", () => {
