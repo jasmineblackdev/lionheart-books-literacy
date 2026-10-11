@@ -154,6 +154,7 @@ export const books: [Book, Book, Book] = [
       "Pairs well with habitat and animal science units",
       "Answer key included for seek-and-find challenges",
     ],
+    price: "$10.99",
     cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),
     previews: [

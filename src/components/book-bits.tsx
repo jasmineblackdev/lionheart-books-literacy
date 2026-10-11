@@ -33,7 +33,13 @@ export function BookCard({ book }: { book: Book }) {
             <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>
           ))}
         </ul>
-        <div className="mt-6 flex flex-col gap-2">
+        {book.price && (
+          <p className="mt-5 font-display text-xl font-semibold">
+            {book.price}
+            <span className="ml-1 text-sm font-normal text-muted-foreground">on Amazon</span>
+          </p>
+        )}
+        <div className="mt-4 flex flex-col gap-2">
           <AmazonButton book={book} />
           <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline">
             See inside {book.short}
