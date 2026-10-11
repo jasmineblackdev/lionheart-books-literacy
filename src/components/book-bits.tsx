@@ -1,17 +1,38 @@
 import { Link } from "@tanstack/react-router";
 import type { Book } from "@/lib/site";
+import { Button } from "@/components/ui/button";
 
 export function AmazonButton({ book, className = "" }: { book: Book; className?: string }) {
+  if (!book.paperbackAvailable) {
+    return <Button disabled variant="bookUnavailable" size="purchase" className={className}>Paperback coming soon to Amazon</Button>;
+  }
   return (
+    <Button asChild variant="bookAmazon" size="purchase" className={className}>
     <a
       href={book.amazon}
       target="_blank"
       rel="noopener noreferrer"
-      className={`btn btn-gold ${className}`}
       aria-label={`Buy ${book.short} on Amazon`}
     >
       Buy on Amazon
     </a>
+    </Button>
+  );
+}
+
+export function PurchaseButtons({ book }: { book: Book }) {
+  return (
+    <div className="grid grid-cols-2 items-start gap-3">
+      <AmazonButton book={book} className="w-full" />
+      <div className="min-w-0">
+        <Button asChild variant="bookDigital" size="purchase" className="w-full">
+          <a href={book.digital.url} target="_blank" rel="noopener noreferrer" aria-label={`${book.short}: Digital PDF – ${book.digital.price}`}>
+            Digital PDF – {book.digital.price}
+          </a>
+        </Button>
+        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Instant download. Print at home or trace on a tablet with a stylus.</p>
+      </div>
+    </div>
   );
 }
 
@@ -41,12 +62,11 @@ export function BookCard({ book }: { book: Book }) {
         </ul>
         {book.price && (
           <p className="mt-auto pt-6 font-display text-xl font-semibold">
-            {book.price}
-            <span className="ml-1 text-sm font-normal text-muted-foreground">on Amazon</span>
+            Paperback {book.price}
           </p>
         )}
         <div className="mt-4 flex flex-col gap-2">
-          <AmazonButton book={book} />
+          <PurchaseButtons book={book} />
           <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline">
             See inside {book.short}
           </Link>

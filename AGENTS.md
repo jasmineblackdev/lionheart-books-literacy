@@ -11,6 +11,7 @@
 
 ## Project rules
 - All book data (titles, ages, Amazon links, previews, sample PDFs) lives in src/lib/site.ts; pages read from it so links stay consistent everywhere.
+- Purchase prices, destinations, and availability live in the central book data and render through shared purchase controls so cards and detail pages remain consistent.
 - The class-set form uses a mailto handoff (owner chose to keep it); book suggestions are stored in Lovable Cloud via server functions only.
 - Suggestion tables have RLS on with no public policies; all reads/writes go through server functions using the admin client after validation, so visitors can never read submissions.
 - The admin review page authorizes by Lovable workspace identity userId found in the site_admins table; never by name or email.

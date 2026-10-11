@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://lionheart-books-literacy.lovable.app/sitemap.xml
+Sitemap: https://lionheart-books-literacy.vercel.app/sitemap.xml
