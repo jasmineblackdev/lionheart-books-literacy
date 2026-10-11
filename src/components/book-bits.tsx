@@ -3,8 +3,14 @@ import type { Book } from "@/lib/site";
 
 export function AmazonButton({ book, className = "" }: { book: Book; className?: string }) {
   return (
-    <a href={book.amazon} target="_blank" rel="noopener noreferrer" className={`btn btn-gold ${className}`}>
-      Buy {book.short} on Amazon
+    <a
+      href={book.amazon}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={`btn btn-gold ${className}`}
+      aria-label={`Buy ${book.short} on Amazon`}
+    >
+      Buy on Amazon
     </a>
   );
 }
@@ -33,7 +39,13 @@ export function BookCard({ book }: { book: Book }) {
             <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>
           ))}
         </ul>
-        <div className="mt-6 flex flex-col gap-2">
+        {book.price && (
+          <p className="mt-auto pt-6 font-display text-xl font-semibold">
+            {book.price}
+            <span className="ml-1 text-sm font-normal text-muted-foreground">on Amazon</span>
+          </p>
+        )}
+        <div className="mt-4 flex flex-col gap-2">
           <AmazonButton book={book} />
           <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline">
             See inside {book.short}

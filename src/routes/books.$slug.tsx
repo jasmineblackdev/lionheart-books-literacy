@@ -49,9 +49,13 @@ function BookPage() {
           <p className="eyebrow mt-4">{b.ages}</p>
           <h1 className="mt-2 text-4xl font-bold leading-tight md:text-5xl">{b.title}</h1>
           <p className="mt-4 text-lg">{b.description}</p>
-          <p className="mt-4 text-sm text-muted-foreground">
-            {[b.pages, b.price && `${b.price} on Amazon`].filter(Boolean).join(" · ")}
-          </p>
+          {b.pages && <p className="mt-4 text-sm text-muted-foreground">{b.pages}</p>}
+          {b.price && (
+            <p className="mt-3 font-display text-3xl font-bold">
+              {b.price}
+              <span className="ml-2 text-base font-normal text-muted-foreground">on Amazon</span>
+            </p>
+          )}
           <AmazonButton book={b} className="mt-6 w-full sm:w-auto" />
           {b.sample && (
             <a href={b.sample.url} download className="btn btn-outline mt-3 w-full sm:ml-3 sm:w-auto">Download free sample pages</a>
