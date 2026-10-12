@@ -14,6 +14,75 @@ export type Database = {
   }
   public: {
     Tables: {
+      amazon_clicks: {
+        Row: {
+          book_slug: string
+          created_at: string
+          id: string
+          ip_hash: string | null
+        }
+        Insert: {
+          book_slug: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+        }
+        Update: {
+          book_slug?: string
+          created_at?: string
+          id?: string
+          ip_hash?: string | null
+        }
+        Relationships: []
+      }
+      book_sales: {
+        Row: {
+          amount_cents: number | null
+          created_at: string
+          currency: string | null
+          external_id: string
+          format: string | null
+          id: string
+          kind: string
+          marketplace: string | null
+          product_key: string | null
+          product_name: string | null
+          quantity: number
+          sold_at: string
+          source: string
+        }
+        Insert: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          external_id: string
+          format?: string | null
+          id?: string
+          kind?: string
+          marketplace?: string | null
+          product_key?: string | null
+          product_name?: string | null
+          quantity?: number
+          sold_at: string
+          source: string
+        }
+        Update: {
+          amount_cents?: number | null
+          created_at?: string
+          currency?: string | null
+          external_id?: string
+          format?: string | null
+          id?: string
+          kind?: string
+          marketplace?: string | null
+          product_key?: string | null
+          product_name?: string | null
+          quantity?: number
+          sold_at?: string
+          source?: string
+        }
+        Relationships: []
+      }
       book_suggestions: {
         Row: {
           category: string
