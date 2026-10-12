@@ -42,70 +42,39 @@ function AdminPage() {
 }
 
 function SignIn() {
-  const [mode, setMode] = useState<"in" | "up">("in");
   const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const email = String(fd.get("email") ?? "").trim();
-    const password = String(fd.get("password") ?? "");
     setBusy(true);
     setError("");
-    setNotice("");
-    if (mode === "up") {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: `${window.location.origin}/admin` },
-      });
-      if (error) setError(error.message);
-      else setNotice("Account created. Check your email for a confirmation link, then sign in.");
-    } else {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) setError("That email and password didn't match. Please try again.");
-    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: String(fd.get("email") ?? "").trim(),
+      password: String(fd.get("password") ?? ""),
+    });
     setBusy(false);
+    if (error) setError("That email and password didn't match. Please try again.");
   }
 
   const field = "mt-1 w-full rounded-xl border border-input bg-card px-4 py-3 text-base";
   return (
     <section className="mx-auto max-w-md px-5 py-16">
-      <h1 className="text-4xl font-bold">{mode === "up" ? "Create admin account" : "Admin sign in"}</h1>
+      <h1 className="text-4xl font-bold">Admin sign in</h1>
       <p className="mt-2 text-muted-foreground">Private dashboard for J. B. Lionheart Books.</p>
       <form onSubmit={onSubmit} className="card-soft mt-6 grid gap-4 p-6">
         {error && <p role="alert" className="text-sm font-semibold text-destructive">{error}</p>}
-        {notice && <p role="status" className="text-sm font-semibold text-primary">{notice}</p>}
         <label className="font-semibold">
           Email
           <input name="email" type="email" autoComplete="username" required className={field} />
         </label>
         <label className="font-semibold">
           Password
-          <input
-            name="password"
-            type="password"
-            autoComplete={mode === "up" ? "new-password" : "current-password"}
-            minLength={8}
-            required
-            className={field}
-          />
+          <input name="password" type="password" autoComplete="current-password" required className={field} />
         </label>
         <button type="submit" disabled={busy} className="btn btn-primary disabled:opacity-60">
-          {busy ? "One moment…" : mode === "up" ? "Create account" : "Sign in"}
-        </button>
-        <button
-          type="button"
-          className="text-sm underline text-muted-foreground"
-          onClick={() => {
-            setMode(mode === "up" ? "in" : "up");
-            setError("");
-            setNotice("");
-          }}
-        >
-          {mode === "up" ? "Already have an account? Sign in" : "First time here? Create your account"}
+          {busy ? "Signing in…" : "Sign in"}
         </button>
       </form>
     </section>
