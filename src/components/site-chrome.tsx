@@ -83,7 +83,8 @@ export function SiteFooter() {
         </div>
       </div>
       <p className="border-t border-primary-foreground/20 py-5 text-center text-sm opacity-80">
-        © {new Date().getFullYear()} J. B. Lionheart. All rights reserved.
+        © {new Date().getFullYear()} J. B. Lionheart. All rights reserved. ·{" "}
+        <Link to="/admin" className="underline-offset-4 hover:underline">Admin login</Link>
       </p>
     </footer>
   );
