@@ -1,7 +1,7 @@
 import { EMAIL } from "./site";
 
 // Sends an email to the site owner through Resend (https://resend.com). The RESEND_API_KEY
-// secret must be set wherever the site runs (Lovable Cloud and Vercel). Without a verified
+// secret must be set wherever the site's server code runs (Vercel). Without a verified
 // domain, Resend's shared sender only delivers to the account owner's address, so the
 // Resend account must be registered to EMAIL. Returns false (and logs why) on any failure.
 export async function emailOwner(msg: { subject: string; text: string; replyTo?: string | undefined }) {

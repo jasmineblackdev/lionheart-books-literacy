@@ -1,7 +1,7 @@
 // Receives Payhip "paid" and "refunded" webhooks (https://help.payhip.com/article/115-webhooks)
 // and records them in book_sales for the /admin dashboard. Payhip proves a webhook is
 // genuine by sending `signature` = SHA-256 hex of the store's API key, which is kept in
-// the PAYHIP_API_KEY Lovable Cloud secret. Payhip retries non-200 responses hourly for
+// the PAYHIP_API_KEY Supabase Edge Function secret. Payhip retries non-200 responses hourly for
 // 3 hours, so duplicates are ignored via the (source, kind, external_id) unique key.
 import { createClient } from "npm:@supabase/supabase-js@2";
 

@@ -1,5 +1,5 @@
-// Runs the Lovable Cloud edge functions in supabase/functions under Node with a fake
-// database, so changes can be checked before asking Lovable to deploy them.
+// Runs the Supabase edge functions in supabase/functions under Node with a fake
+// database, so changes can be checked before deploying them (npm run deploy:functions).
 // Usage: npm run test:edge
 import { build } from "esbuild";
 import { createHash } from "node:crypto";
@@ -28,6 +28,17 @@ const reset = (env, respond = () => ({ data: null, error: null, count: 0 }), get
 };
 const post = (body, headers = {}) => new Request("http://x", { method: "POST", headers: { "content-type": "application/json", ...headers }, body: JSON.stringify(body) });
 const call = async (h, req) => { const r = await h(req); return { status: r.status, body: await r.json().catch(() => null) }; };
+
+// ---------- ping ----------
+{
+  const h = await load("ping");
+  reset({});
+  let r = await call(h, new Request("http://x"));
+  check("ping reads the database (keeps the free project awake)", r.status === 200 && r.body.database === true && __db.ops.some((o) => o.table === "site_admins"));
+  reset({}, () => ({ data: null, error: { message: "down" }, count: null }));
+  r = await call(h, new Request("http://x"));
+  check("ping reports a database failure", r.status === 500 && r.body.database === false);
+}
 
 // ---------- forms ----------
 {

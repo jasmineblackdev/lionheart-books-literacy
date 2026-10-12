@@ -1,0 +1,22 @@
+# Keeps the free Supabase project awake: Supabase pauses free projects after about a week
+# with little database activity, which would stop the site's forms and /admin dashboard.
+# Calls the `ping` edge function once a day; it does one tiny database read.
+name: Supabase keep-alive
+
+on:
+  schedule:
+    - cron: "17 14 * * *" # daily, 14:17 UTC
+  workflow_dispatch: # allows running it by hand from the Actions tab
+
+permissions: {}
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ping the database through the ping edge function
+        run: |
+          body=$(curl -fsS --retry 3 --retry-delay 20 https://gbvsskqxsphkjxjbwbjm.supabase.co/functions/v1/ping)
+          echo "$body"
+          echo "$body" | grep -q '"database":true'

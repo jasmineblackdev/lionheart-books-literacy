@@ -1,5 +1,5 @@
 // Private admin API for the site's /admin dashboard. The caller must send the access
-// token of a signed-in Lovable Cloud user whose id is in the site_admins table;
+// token of a signed-in Supabase Auth user whose id is in the site_admins table;
 // everyone else gets 401/403 and no data. Actions (POST JSON body):
 //   { action: "list" }                                   → suggestions, inquiries, sales, Amazon clicks
 //   { action: "set_status", kind, id, status }           → update one row's status

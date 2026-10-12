@@ -1,9 +1,9 @@
 import { getRequest } from "@tanstack/react-start/server";
 
-// Saves a public form submission through the Lovable Cloud "forms" edge function
+// Saves a public form submission through the Supabase "forms" edge function
 // (supabase/functions/forms). The site runs on Vercel, which has no database service
 // key, so it can't write to the database directly. FORMS_SECRET must match the
-// secret of the same name in Lovable Cloud.
+// Edge Function secret of the same name in Supabase.
 export type SaveResult = { ok: true } | { ok: false; reason: "rate_limited" | "failed" };
 
 export async function hashIp(ip: string) {

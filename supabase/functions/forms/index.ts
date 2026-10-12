@@ -1,8 +1,8 @@
 // Saves public form submissions (book suggestions, class-set inquiries) and "Buy on
 // Amazon" click counts for the site,
-// which is hosted outside Lovable Cloud and so has no database service key of its own.
+// whose server code runs on Vercel and has no database service key of its own.
 // Only the site's server may call this: it must send the shared FORMS_SECRET, which is
-// set both here (Lovable Cloud secret) and on the site host (Vercel env var). The site
+// set both here (Supabase Edge Function secret) and on the site host (Vercel env var). The site
 // validates input first; this function re-checks shapes and lengths before inserting.
 import { createClient } from "npm:@supabase/supabase-js@2";
 

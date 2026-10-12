@@ -12,7 +12,8 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:edge": "node scripts/edge-test/run.mjs"
+    "test:edge": "node scripts/edge-test/run.mjs",
+    "deploy:functions": "npm run test:edge && supabase functions deploy --project-ref gbvsskqxsphkjxjbwbjm --use-api"
   },
   "overrides": {
     "rolldown": "1.2.1"
