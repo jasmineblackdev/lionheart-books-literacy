@@ -10,16 +10,26 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as SuggestABookRouteImport } from './routes/suggest-a-book'
 import { Route as TeachersRouteImport } from './routes/teachers'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminBooksRouteImport } from './routes/admin.books'
+import { Route as AdminSalesRouteImport } from './routes/admin.sales'
+import { Route as AdminSchoolOrdersRouteImport } from './routes/admin.school-orders'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminSuggestionsRouteImport } from './routes/admin.suggestions'
 import { Route as BooksSlugRouteImport } from './routes/books.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -38,14 +48,34 @@ const TeachersRoute = TeachersRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBooksRoute = AdminBooksRouteImport.update({
+  id: '/books',
+  path: '/books',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSalesRoute = AdminSalesRouteImport.update({
+  id: '/sales',
+  path: '/sales',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSchoolOrdersRoute = AdminSchoolOrdersRouteImport.update({
+  id: '/school-orders',
+  path: '/school-orders',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminSuggestionsRoute = AdminSuggestionsRouteImport.update({
-  id: '/admin/suggestions',
-  path: '/admin/suggestions',
-  getParentRoute: () => rootRouteImport,
+  id: '/suggestions',
+  path: '/suggestions',
+  getParentRoute: () => AdminRoute,
 } as any)
 const BooksSlugRoute = BooksSlugRouteImport.update({
   id: '/books/$slug',
@@ -55,9 +85,14 @@ const BooksSlugRoute = BooksSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/books': typeof AdminBooksRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/school-orders': typeof AdminSchoolOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -67,6 +102,10 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/books': typeof AdminBooksRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/school-orders': typeof AdminSchoolOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
   '/admin': typeof AdminIndexRoute
@@ -74,9 +113,14 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/privacy': typeof PrivacyRoute
   '/suggest-a-book': typeof SuggestABookRoute
   '/teachers': typeof TeachersRoute
+  '/admin/books': typeof AdminBooksRoute
+  '/admin/sales': typeof AdminSalesRoute
+  '/admin/school-orders': typeof AdminSchoolOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
   '/admin/suggestions': typeof AdminSuggestionsRoute
   '/books/$slug': typeof BooksSlugRoute
   '/admin/': typeof AdminIndexRoute
@@ -85,9 +129,14 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/privacy'
     | '/suggest-a-book'
     | '/teachers'
+    | '/admin/books'
+    | '/admin/sales'
+    | '/admin/school-orders'
+    | '/admin/settings'
     | '/admin/suggestions'
     | '/books/$slug'
     | '/admin/'
@@ -97,15 +146,24 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/suggest-a-book'
     | '/teachers'
+    | '/admin/books'
+    | '/admin/sales'
+    | '/admin/school-orders'
+    | '/admin/settings'
     | '/admin/suggestions'
     | '/books/$slug'
     | '/admin'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/privacy'
     | '/suggest-a-book'
     | '/teachers'
+    | '/admin/books'
+    | '/admin/sales'
+    | '/admin/school-orders'
+    | '/admin/settings'
     | '/admin/suggestions'
     | '/books/$slug'
     | '/admin/'
@@ -113,12 +171,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   PrivacyRoute: typeof PrivacyRoute
   SuggestABookRoute: typeof SuggestABookRoute
   TeachersRoute: typeof TeachersRoute
-  AdminSuggestionsRoute: typeof AdminSuggestionsRoute
   BooksSlugRoute: typeof BooksSlugRoute
-  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -128,6 +185,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -153,17 +217,45 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/books': {
+      id: '/admin/books'
+      path: '/books'
+      fullPath: '/admin/books'
+      preLoaderRoute: typeof AdminBooksRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/sales': {
+      id: '/admin/sales'
+      path: '/sales'
+      fullPath: '/admin/sales'
+      preLoaderRoute: typeof AdminSalesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/school-orders': {
+      id: '/admin/school-orders'
+      path: '/school-orders'
+      fullPath: '/admin/school-orders'
+      preLoaderRoute: typeof AdminSchoolOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/suggestions': {
       id: '/admin/suggestions'
-      path: '/admin/suggestions'
+      path: '/suggestions'
       fullPath: '/admin/suggestions'
       preLoaderRoute: typeof AdminSuggestionsRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/books/$slug': {
       id: '/books/$slug'
@@ -175,14 +267,33 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminBooksRoute: typeof AdminBooksRoute
+  AdminSalesRoute: typeof AdminSalesRoute
+  AdminSchoolOrdersRoute: typeof AdminSchoolOrdersRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminSuggestionsRoute: typeof AdminSuggestionsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBooksRoute: AdminBooksRoute,
+  AdminSalesRoute: AdminSalesRoute,
+  AdminSchoolOrdersRoute: AdminSchoolOrdersRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminSuggestionsRoute: AdminSuggestionsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   PrivacyRoute: PrivacyRoute,
   SuggestABookRoute: SuggestABookRoute,
   TeachersRoute: TeachersRoute,
-  AdminSuggestionsRoute: AdminSuggestionsRoute,
   BooksSlugRoute: BooksSlugRoute,
-  AdminIndexRoute: AdminIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

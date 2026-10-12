@@ -1,373 +1,112 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
-import type { Session } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  AdminError,
-  INQUIRY_STATUSES,
-  gmailReplyUrl,
-  importSales,
-  loadAdminData,
-  setAdminStatus,
-  type InquiryRow,
-  type SuggestionRow,
-} from "@/lib/admin-api";
-import { parseKdpReport } from "@/lib/kdp";
-import { bookForSale, formatCents, summarize, type ClickData, type SaleRow } from "@/lib/sales";
-import { readXlsx } from "@/lib/xlsx";
-import { AUDIENCES, CATEGORIES, STATUSES, labelOf } from "@/lib/suggestions";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { AlertCircle, BookOpen, Lightbulb, MessageSquare, School, Upload, type LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { sel } from "@/components/admin/panels";
+import { PageTitle } from "@/components/admin/shell";
+import { useAdminData, withDefaults } from "@/components/admin/use-admin";
+import { RANGES, overviewTotals, recentActivity, type Range } from "@/lib/overview";
+import { formatCents } from "@/lib/sales";
 
-export const Route = createFileRoute("/admin/")({
-  ssr: false,
-  head: () => ({
-    meta: [
-      { title: "Admin | J. B. Lionheart" },
-      { name: "description", content: "Private publisher dashboard." },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
-  }),
-  component: AdminPage,
-});
+export const Route = createFileRoute("/admin/")({ component: Overview });
 
-const sel = "rounded-xl border border-input bg-card px-3 py-2";
+function Overview() {
+  const q = useAdminData();
+  const [range, setRange] = useState<Range>("30d");
+  if (!q.data) return null;
+  const data = withDefaults(q.data);
+  const t = overviewTotals(data, range);
+  const activity = recentActivity(data);
 
-function AdminPage() {
-  const [session, setSession] = useState<Session | null | undefined>(undefined);
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSession(data.session));
-    const { data } = supabase.auth.onAuthStateChange((_e, s) => setSession(s));
-    return () => data.subscription.unsubscribe();
-  }, []);
+  const stats: { label: string; value: string; hint?: string }[] = [
+    { label: "Revenue", value: formatCents(t.revenueUsdCents), hint: "Payhip sales + Amazon royalties (USD)" },
+    { label: "Books sold", value: String(t.booksSold), hint: `${t.digitalUnits} digital · ${t.paperbackUnits} paperback` },
+    { label: "Amazon clicks", value: String(t.amazonClicks), hint: "Interest, not confirmed sales" },
+    { label: "School inquiries", value: String(t.inquiriesReceived), hint: "Received in this period" },
+    { label: "Book suggestions", value: String(t.suggestionsReceived), hint: "Received in this period" },
+  ];
 
-  if (session === undefined) return <p className="p-10 text-center">Loading…</p>;
-  if (!session) return <SignIn />;
-  return <Dashboard email={session.user.email ?? ""} />;
-}
+  const attention: { icon: LucideIcon; text: string; to: string }[] = [];
+  if (t.newInquiries) attention.push({ icon: AlertCircle, text: `${t.newInquiries} new school ${t.newInquiries === 1 ? "inquiry" : "inquiries"}`, to: "/admin/school-orders" });
+  if (t.newSuggestions) attention.push({ icon: Lightbulb, text: `${t.newSuggestions} new book ${t.newSuggestions === 1 ? "suggestion" : "suggestions"}`, to: "/admin/suggestions" });
 
-function SignIn() {
-  const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  const actions: { icon: LucideIcon; label: string; to: string }[] = [
+    { icon: School, label: "Review school inquiries", to: "/admin/school-orders" },
+    { icon: MessageSquare, label: "Review suggestions", to: "/admin/suggestions" },
+    { icon: Upload, label: "Upload KDP report", to: "/admin/sales" },
+    { icon: BookOpen, label: "View my books", to: "/admin/books" },
+  ];
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    setBusy(true);
-    setError("");
-    const { error } = await supabase.auth.signInWithPassword({
-      email: String(fd.get("email") ?? "").trim(),
-      password: String(fd.get("password") ?? ""),
-    });
-    setBusy(false);
-    if (error) setError("That email and password didn't match. Please try again.");
-  }
-
-  const field = "mt-1 w-full rounded-xl border border-input bg-card px-4 py-3 text-base";
-  return (
-    <section className="mx-auto max-w-md px-5 py-16">
-      <h1 className="text-4xl font-bold">Admin sign in</h1>
-      <p className="mt-2 text-muted-foreground">Private dashboard for J. B. Lionheart Books.</p>
-      <form onSubmit={onSubmit} className="card-soft mt-6 grid gap-4 p-6">
-        {error && <p role="alert" className="text-sm font-semibold text-destructive">{error}</p>}
-        <label className="font-semibold">
-          Email
-          <input name="email" type="email" autoComplete="username" required className={field} />
-        </label>
-        <label className="font-semibold">
-          Password
-          <input name="password" type="password" autoComplete="current-password" required className={field} />
-        </label>
-        <button type="submit" disabled={busy} className="btn btn-primary disabled:opacity-60">
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
-    </section>
-  );
-}
-
-function Dashboard({ email }: { email: string }) {
-  const qc = useQueryClient();
-  const q = useQuery({ queryKey: ["admin"], queryFn: loadAdminData, retry: false });
-  const [tab, setTab] = useState<"inquiries" | "suggestions" | "sales">("inquiries");
-  const [saving, setSaving] = useState<string | null>(null);
-  const signOut = () => supabase.auth.signOut();
-
-  async function setStatus(kind: "suggestion" | "class_set", id: string, status: string) {
-    setSaving(id);
-    try {
-      await setAdminStatus(kind, id, status);
-      await qc.invalidateQueries({ queryKey: ["admin"] });
-    } catch {
-      alert("Couldn't update the status. Please try again.");
-    } finally {
-      setSaving(null);
-    }
-  }
-
-  if (q.isLoading) return <p className="p-10 text-center">Loading…</p>;
-  if (q.error instanceof AdminError && q.error.code === "not_admin")
-    return (
-      <Msg title="Not authorized" onSignOut={signOut}>
-        {email} isn't on the admin list. Account ID: <code className="break-all">{q.error.userId}</code>
-      </Msg>
-    );
-  if (q.error instanceof AdminError && q.error.code === "signed_out")
-    return <Msg title="Signed out" onSignOut={signOut}>Your session ended. Please sign in again.</Msg>;
-  if (q.isError || !q.data)
-    return <Msg title="Couldn't load the dashboard" onSignOut={signOut}>Try refreshing the page.</Msg>;
-
-  // sales/clicks default to empty in case the admin function predates them.
-  const { inquiries, suggestions, sales = [], clicks = { recent: [], totals: {} } } = q.data;
-  const newCount = (rows: { status: string }[]) => rows.filter((r) => r.status === "new").length;
-  const tabBtn = (t: typeof tab, label: string, n: number) => (
-    <button
-      role="tab"
-      aria-selected={tab === t}
-      onClick={() => setTab(t)}
-      className={`rounded-full px-5 py-2 font-semibold ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary"}`}
-    >
-      {label} {n > 0 && <span className="ml-1 rounded-full bg-accent px-2 text-sm text-accent-foreground">{n} new</span>}
-    </button>
-  );
-
-  return (
-    <section className="mx-auto max-w-6xl px-5 py-10">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-4xl font-bold">Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          {email} · <button className="underline" onClick={signOut}>Sign out</button>
-        </p>
-      </div>
-      <div role="tablist" className="mt-6 flex flex-wrap gap-2">
-        {tabBtn("inquiries", "Class-set inquiries", newCount(inquiries))}
-        {tabBtn("suggestions", "Book suggestions", newCount(suggestions))}
-        {tabBtn("sales", "Sales", 0)}
-      </div>
-      {tab === "inquiries" && <Inquiries rows={inquiries} saving={saving} onStatus={(id, s) => setStatus("class_set", id, s)} />}
-      {tab === "suggestions" && <Suggestions rows={suggestions} saving={saving} onStatus={(id, s) => setStatus("suggestion", id, s)} />}
-      {tab === "sales" && <Sales sales={sales} clicks={clicks} />}
-    </section>
-  );
-}
-
-function Inquiries({ rows, saving, onStatus }: { rows: InquiryRow[]; saving: string | null; onStatus: (id: string, s: string) => void }) {
-  const [status, setStatusFilter] = useState("");
-  const shown = rows.filter((r) => !status || r.status === status);
   return (
     <>
-      <div className="mt-6 flex flex-wrap items-center gap-3">
-        <select aria-label="Filter by status" className={sel} value={status} onChange={(e) => setStatusFilter(e.target.value)}>
-          <option value="">All statuses</option>
-          {INQUIRY_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+      <PageTitle title="Overview" subtitle="Your publishing business at a glance">
+        <select aria-label="Date range" className={sel} value={range} onChange={(e) => setRange(e.target.value as Range)}>
+          {RANGES.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
         </select>
-        <p className="text-muted-foreground">{rows.length} total · {shown.length} shown</p>
-      </div>
-      <ul className="mt-6 space-y-3">
-        {shown.map((r) => (
-          <li key={r.id} className="card-soft grid gap-3 p-5 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="min-w-0">
-              <p className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
-              <p className="mt-1 font-display text-xl font-semibold">{r.org} · {r.quantity} books</p>
-              <p className="mt-1">{r.name} · <a href={`mailto:${r.email}`} className="underline">{r.email}</a></p>
-              {r.message && <p className="mt-2 whitespace-pre-wrap break-words">{r.message}</p>}
-            </div>
-            <div className="flex flex-col gap-2">
-              <a href={gmailReplyUrl(r)} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Reply in Gmail</a>
-              <select aria-label="Status" className={sel} value={r.status} disabled={saving === r.id} onChange={(e) => onStatus(r.id, e.target.value)}>
-                {INQUIRY_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-              </select>
-            </div>
-          </li>
-        ))}
-        {!shown.length && <li className="text-center text-muted-foreground">No inquiries yet.</li>}
-      </ul>
-    </>
-  );
-}
+      </PageTitle>
 
-function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }) {
-  const summary = summarize(sales, clicks);
-  const recent = sales.slice(0, 50);
-  return (
-    <>
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {summary.map((s) => (
-          <div key={s.book.slug} className="card-soft p-5">
-            <h2 className="text-xl font-semibold">{s.book.short}</h2>
-            <dl className="mt-3 space-y-2 text-sm">
-              <div className="flex justify-between gap-2"><dt>Digital PDFs sold (Payhip)</dt><dd className="font-semibold">{s.digitalUnits}</dd></div>
-              <div className="flex justify-between gap-2"><dt>Digital revenue</dt><dd className="font-semibold">{formatCents(s.digitalCents)}</dd></div>
-              <div className="flex justify-between gap-2"><dt>Paperbacks sold (Amazon)</dt><dd className="font-semibold">{s.paperbackUnits}</dd></div>
-              <div className="flex justify-between gap-2"><dt>Amazon royalties (USD)</dt><dd className="font-semibold">{formatCents(s.amazonRoyaltyUsdCents)}</dd></div>
-              <div className="flex justify-between gap-2"><dt>"Buy on Amazon" clicks</dt><dd className="font-semibold">{s.clicksTotal} <span className="font-normal text-muted-foreground">({s.clicks30d} in 30 days)</span></dd></div>
-            </dl>
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-5">
+        {stats.map((s, i) => (
+          <div key={s.label} className={`rounded-2xl border bg-card p-4 sm:p-5 ${i === 0 ? "col-span-2 lg:col-span-1" : ""}`}>
+            <p className="text-sm text-muted-foreground">{s.label}</p>
+            <p className="mt-1 font-display text-2xl font-semibold text-primary sm:text-3xl">{s.value}</p>
+            {s.hint && <p className="mt-1 text-xs text-muted-foreground">{s.hint}</p>}
           </div>
         ))}
       </div>
-      <p className="mt-4 text-sm text-muted-foreground">
-        Digital sales arrive automatically from Payhip. Amazon paperback sales come from KDP reports you upload. Clicks show interest, not sales.
-      </p>
 
-      <KdpUpload />
+      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+        <div className="space-y-6">
+          <section className="rounded-2xl border bg-card p-5">
+            <h2 className="text-xl font-semibold">Needs attention</h2>
+            {attention.length ? (
+              <ul className="mt-3 space-y-2">
+                {attention.map((a) => (
+                  <li key={a.text}>
+                    <Link to={a.to} className="flex items-center gap-3 rounded-xl px-2 py-2 font-semibold hover:bg-secondary">
+                      <a.icon aria-hidden className="size-5 text-accent-foreground" />
+                      {a.text}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="mt-2 text-muted-foreground">You're all caught up.</p>
+            )}
+          </section>
 
-      <h2 className="mt-8 text-2xl font-semibold">Recent sales</h2>
-      <ul className="mt-3 space-y-2">
-        {recent.map((r) => (
-          <li key={r.id} className="card-soft flex flex-wrap items-center justify-between gap-2 p-4 text-sm">
-            <span>
-              {new Date(r.sold_at).toLocaleDateString()} · {bookForSale(r)?.short ?? r.product_name ?? "Unknown product"} · {r.format ?? (r.source === "payhip" ? "Digital PDF" : "Paperback")}
-              {r.marketplace ? ` · ${r.marketplace}` : ""}
-            </span>
-            <span className="font-semibold">
-              {r.kind === "refund" ? "Refund · " : ""}{r.quantity} × {r.source === "payhip" ? "Payhip" : "Amazon"}
-              {r.amount_cents != null ? ` · ${formatCents(r.amount_cents, r.currency ?? "USD")}` : ""}
-            </span>
-          </li>
-        ))}
-        {!recent.length && <li className="text-center text-muted-foreground">No sales recorded yet.</li>}
-      </ul>
-    </>
-  );
-}
-
-function KdpUpload() {
-  const qc = useQueryClient();
-  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  async function onFile(file: File | undefined) {
-    if (!file) return;
-    setBusy(true);
-    setMsg(null);
-    try {
-      const { rows, skipped, foundSheets } = parseKdpReport(await readXlsx(await file.arrayBuffer()));
-      if (!foundSheets.length) {
-        setMsg({ ok: false, text: "This doesn't look like a KDP Orders report. Download it from KDP Reports → Orders → Download report." });
-      } else if (!rows.length) {
-        setMsg({ ok: true, text: `No sales in this report${skipped ? ` (${skipped} rows couldn't be read)` : ""}. Nothing to add yet.` });
-      } else {
-        for (let i = 0; i < rows.length; i += 5000) await importSales(rows.slice(i, i + 5000));
-        await qc.invalidateQueries({ queryKey: ["admin"] });
-        setMsg({ ok: true, text: `Added ${rows.length} sales rows from the report${skipped ? `; ${skipped} rows couldn't be read` : ""}. Re-uploading the same dates updates them instead of double-counting.` });
-      }
-    } catch {
-      setMsg({ ok: false, text: "Couldn't read that file. Make sure it's the .xlsx report downloaded from KDP." });
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return (
-    <div className="card-soft mt-6 p-5">
-      <h2 className="text-xl font-semibold">Upload a KDP report</h2>
-      <p className="mt-1 text-sm text-muted-foreground">
-        In KDP, go to Reports → Orders → Download report, then choose the .xlsx file here. Upload a new one whenever you want the paperback numbers updated.
-      </p>
-      <input
-        type="file"
-        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        aria-label="KDP report file"
-        disabled={busy}
-        className="mt-3 block text-sm"
-        onChange={(e) => {
-          void onFile(e.target.files?.[0]);
-          e.target.value = "";
-        }}
-      />
-      {busy && <p className="mt-2 text-sm">Reading the report…</p>}
-      {msg && <p role="status" className={`mt-2 text-sm font-semibold ${msg.ok ? "text-success" : "text-destructive"}`}>{msg.text}</p>}
-    </div>
-  );
-}
-
-const STOP = new Set("a an and the of for to in on with about that this is are be book books kids kid i we my our it more like would love".split(" "));
-
-function Suggestions({ rows, saving, onStatus }: { rows: SuggestionRow[]; saving: string | null; onStatus: (id: string, s: string) => void }) {
-  const [f, setF] = useState({ search: "", category: "", audience: "", status: "", from: "" });
-  const filtered = useMemo(
-    () =>
-      rows.filter(
-        (r) =>
-          (!f.category || r.category === f.category) &&
-          (!f.audience || r.intended_audience === f.audience) &&
-          (!f.status || r.status === f.status) &&
-          (!f.from || r.created_at >= f.from) &&
-          (!f.search || `${r.idea ?? ""} ${r.email ?? ""}`.toLowerCase().includes(f.search.toLowerCase())),
-      ),
-    [rows, f],
-  );
-  const themes = useMemo(() => {
-    const c = new Map<string, number>();
-    for (const r of filtered)
-      for (const w of new Set((r.idea ?? "").toLowerCase().match(/[a-z]{3,}/g) ?? []))
-        if (!STOP.has(w)) c.set(w, (c.get(w) ?? 0) + 1);
-    return [...c].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1]).slice(0, 15);
-  }, [filtered]);
-
-  return (
-    <>
-      <p className="mt-6 text-muted-foreground">{rows.length} total · {filtered.length} shown</p>
-      <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-        <input aria-label="Search ideas" placeholder="Search ideas…" className={sel} value={f.search} onChange={(e) => setF({ ...f, search: e.target.value })} />
-        {([
-          ["category", "All categories", CATEGORIES],
-          ["audience", "All audiences", AUDIENCES],
-          ["status", "All statuses", STATUSES],
-        ] as const).map(([k, l, opts]) => (
-          <select key={k} aria-label={l} className={sel} value={f[k]} onChange={(e) => setF({ ...f, [k]: e.target.value })}>
-            <option value="">{l}</option>
-            {opts.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-          </select>
-        ))}
-        <input type="date" aria-label="Submitted since" className={sel} value={f.from} onChange={(e) => setF({ ...f, from: e.target.value })} />
-      </div>
-
-      <div className="mt-6 grid gap-4 md:grid-cols-2">
-        <div className="card-soft p-5">
-          <h2 className="text-xl font-semibold">By category</h2>
-          <ul className="mt-2 space-y-1 text-sm">
-            {CATEGORIES.map((c) => <li key={c.value}>{c.label}: <strong>{filtered.filter((r) => r.category === c.value).length}</strong></li>)}
-          </ul>
-        </div>
-        <div className="card-soft p-5">
-          <h2 className="text-xl font-semibold">Recurring themes</h2>
-          {themes.length ? (
-            <ul className="mt-2 flex flex-wrap gap-2">
-              {themes.map(([w, n]) => (
-                <li key={w}><button className="rounded-full bg-secondary px-3 py-1 text-sm" onClick={() => setF({ ...f, search: w })}>{w} · {n}</button></li>
+          <section className="rounded-2xl border bg-card p-5">
+            <h2 className="text-xl font-semibold">Quick actions</h2>
+            <ul className="mt-3 grid gap-2">
+              {actions.map((a, i) => (
+                <li key={a.label}>
+                  <Link to={a.to} className={`flex items-center gap-3 rounded-xl px-4 py-3 font-semibold ${i === 0 ? "bg-primary text-primary-foreground hover:bg-primary/90" : "bg-secondary hover:bg-secondary/70"}`}>
+                    <a.icon aria-hidden className="size-5" />
+                    {a.label}
+                  </Link>
+                </li>
               ))}
             </ul>
-          ) : <p className="mt-2 text-sm text-muted-foreground">Words that show up in 2+ ideas will appear here.</p>}
+          </section>
         </div>
+
+        <section className="rounded-2xl border bg-card p-5">
+          <h2 className="text-xl font-semibold">Recent activity</h2>
+          {activity.length ? (
+            <ul className="mt-3 divide-y">
+              {activity.map((a, i) => (
+                <li key={i}>
+                  <Link to={a.to} className="flex flex-wrap items-baseline justify-between gap-2 px-1 py-3 hover:bg-secondary/50">
+                    <span className="min-w-0 break-words">{a.text}</span>
+                    <time className="text-sm text-muted-foreground" dateTime={a.at}>{new Date(a.at).toLocaleDateString()}</time>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-muted-foreground">Nothing yet. New inquiries, suggestions and sales will show up here.</p>
+          )}
+        </section>
       </div>
-
-      <ul className="mt-6 space-y-3">
-        {filtered.map((r) => (
-          <li key={r.id} className="card-soft grid gap-3 p-5 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="min-w-0">
-              <p className="text-sm text-muted-foreground">
-                {new Date(r.created_at).toLocaleDateString()} · {labelOf(CATEGORIES, r.category)} · {labelOf(AUDIENCES, r.intended_audience)}
-              </p>
-              <p className="mt-1 whitespace-pre-wrap break-words">{r.idea || <em className="text-muted-foreground">No idea text</em>}</p>
-              {r.email && <p className="mt-1 text-sm">{r.email} {r.marketing_consent ? "· wants release updates" : "· no marketing consent"}</p>}
-            </div>
-            <select aria-label="Status" className={sel} value={r.status} disabled={saving === r.id} onChange={(e) => onStatus(r.id, e.target.value)}>
-              {STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-            </select>
-          </li>
-        ))}
-        {!filtered.length && <li className="text-center text-muted-foreground">No suggestions match.</li>}
-      </ul>
     </>
-  );
-}
-
-function Msg({ title, children, onSignOut }: { title: string; children: ReactNode; onSignOut: () => void }) {
-  return (
-    <section className="mx-auto max-w-lg px-5 py-20 text-center">
-      <h1 className="text-3xl font-bold">{title}</h1>
-      <p className="mt-3 text-muted-foreground">{children}</p>
-      <button className="btn btn-outline mt-6" onClick={onSignOut}>Sign out</button>
-    </section>
   );
 }

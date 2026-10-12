@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
@@ -113,6 +114,14 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // The /admin Publisher Studio has its own layout, without the public header and footer.
+  const isAdmin = useRouterState({ select: (s) => s.location.pathname === "/admin" || s.location.pathname.startsWith("/admin/") });
+  if (isAdmin)
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    );
 
   return (
     <QueryClientProvider client={queryClient}>
