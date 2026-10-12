@@ -105,8 +105,8 @@ function SuggestPage() {
           ))}
 
           <label className="block font-semibold">
-            What would you love to see? <span className="font-normal text-muted-foreground">(optional)</span>
-            <textarea name="idea" rows={5} maxLength={1000} className={field} placeholder="A topic, an animal, a skill, a character…" aria-describedby={errors["idea"] ? "idea-err" : undefined} />
+            What would you love to see?
+            <textarea name="idea" rows={5} maxLength={1000} className={field} placeholder="A topic, an animal, a skill, a character…" aria-invalid={!!errors["idea"]} aria-describedby={errors["idea"] ? "idea-err" : undefined} />
             {err("idea")}
           </label>
 

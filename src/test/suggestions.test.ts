@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { suggestionEmail, suggestionSchema } from "@/lib/suggestions";
 
-const base = { category: "puzzles", intended_audience: "7-10" };
+const base = { category: "puzzles", intended_audience: "7-10", idea: "A dinosaur maze book" };
 
 describe("book suggestion rules", () => {
   it("accepts a suggestion with no email and no consent", () => {
@@ -10,8 +10,13 @@ describe("book suggestion rules", () => {
     expect(r.marketing_consent).toBe(false);
   });
   it("requires a category and audience", () => {
-    expect(suggestionSchema.safeParse({ intended_audience: "7-10" }).success).toBe(false);
-    expect(suggestionSchema.safeParse({ category: "puzzles" }).success).toBe(false);
+    expect(suggestionSchema.safeParse({ intended_audience: "7-10", idea: "x" }).success).toBe(false);
+    expect(suggestionSchema.safeParse({ category: "puzzles", idea: "x" }).success).toBe(false);
+  });
+  it("requires an idea", () => {
+    expect(suggestionSchema.safeParse({ ...base, idea: "" }).success).toBe(false);
+    expect(suggestionSchema.safeParse({ ...base, idea: "   " }).success).toBe(false);
+    expect(suggestionSchema.safeParse({ category: "puzzles", intended_audience: "7-10" }).success).toBe(false);
   });
   it("rejects ideas over 1000 characters", () => {
     expect(suggestionSchema.safeParse({ ...base, idea: "x".repeat(1001) }).success).toBe(false);
@@ -26,15 +31,15 @@ describe("book suggestion rules", () => {
 
 describe("book suggestion email", () => {
   it("summarizes the suggestion for the owner's inbox", () => {
-    const d = suggestionSchema.parse({ ...base, idea: "A dinosaur maze book", email: "fan@home.com", marketing_consent: true });
+    const d = suggestionSchema.parse({ ...base, email: "fan@home.com", marketing_consent: true });
     expect(suggestionEmail(d)).toEqual({
       subject: "New book suggestion: Puzzles & brain games",
       text: "Kind of book: Puzzles & brain games\nFor: Ages 7–10\nEmail: fan@home.com\nWants release updates: Yes\n\nA dinosaur maze book",
     });
   });
-  it("notes when no email or idea was given", () => {
+  it("notes when no email was given", () => {
     expect(suggestionEmail(suggestionSchema.parse(base)).text).toBe(
-      "Kind of book: Puzzles & brain games\nFor: Ages 7–10\nEmail: (not given)\nWants release updates: No\n\n(no idea text)",
+      "Kind of book: Puzzles & brain games\nFor: Ages 7–10\nEmail: (not given)\nWants release updates: No\n\nA dinosaur maze book",
     );
   });
 });

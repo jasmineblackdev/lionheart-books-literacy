@@ -30,7 +30,7 @@ export const suggestionSchema = z
   .object({
     category: z.enum(vals(CATEGORIES), { message: "Please choose a kind of book." }),
     intended_audience: z.enum(vals(AUDIENCES), { message: "Please choose who the book is for." }),
-    idea: z.string().trim().max(1000, "Please keep your idea under 1,000 characters.").optional().default(""),
+    idea: z.string().trim().min(1, "Please tell us what you'd love to see.").max(1000, "Please keep your idea under 1,000 characters."),
     email: z
       .string()
       .trim()
@@ -63,7 +63,7 @@ export function suggestionEmail(d: z.output<typeof suggestionSchema>) {
       `Email: ${d.email || "(not given)"}`,
       `Wants release updates: ${d.email && d.marketing_consent ? "Yes" : "No"}`,
       "",
-      d.idea || "(no idea text)",
+      d.idea,
     ].join("\n"),
   };
 }
