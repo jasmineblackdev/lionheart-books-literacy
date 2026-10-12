@@ -1,3 +1,6 @@
 project_id = "xspzhehjkclzvmecpbye"
 [functions.ping]
 verify_jwt = false
+
+[functions.forms]
+verify_jwt = false

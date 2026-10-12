@@ -51,8 +51,6 @@ export const statusSchema = z.enum(vals(STATUSES));
 export const labelOf = (list: readonly { value: string; label: string }[], v: string) =>
   list.find((x) => x.value === v)?.label ?? v;
 
-/** Max suggestions per visitor (by hashed IP) per hour. */
-export const RATE_LIMIT_PER_HOUR = 5;
 
 export function suggestionEmail(d: z.output<typeof suggestionSchema>) {
   return {
