@@ -41,6 +41,8 @@ export type BookSummary = {
   digitalUnits: number;
   digitalCents: number;
   paperbackUnits: number;
+  /** Amazon royalties in USD cents; other currencies are left out of this total. */
+  amazonRoyaltyUsdCents: number;
   clicksTotal: number;
   clicks30d: number;
 };
@@ -57,6 +59,9 @@ export function summarize(sales: SaleRow[], clicks: ClickData, now = Date.now())
       digitalUnits: digital.reduce((n, r) => n + sign(r) * r.quantity, 0),
       digitalCents: digital.reduce((n, r) => n + sign(r) * (r.amount_cents ?? 0), 0),
       paperbackUnits: mine.filter((r) => r.source === "amazon").reduce((n, r) => n + sign(r) * r.quantity, 0),
+      amazonRoyaltyUsdCents: mine
+        .filter((r) => r.source === "amazon" && (r.currency ?? "USD") === "USD")
+        .reduce((n, r) => n + sign(r) * (r.amount_cents ?? 0), 0),
       clicksTotal: clicks.totals[book.slug] ?? 0,
       clicks30d: clicks.recent.filter((c) => c.book_slug === book.slug && Date.parse(c.created_at) >= since30).length,
     };

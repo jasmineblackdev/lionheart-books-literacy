@@ -7,12 +7,15 @@ import {
   AdminError,
   INQUIRY_STATUSES,
   gmailReplyUrl,
+  importSales,
   loadAdminData,
   setAdminStatus,
   type InquiryRow,
   type SuggestionRow,
 } from "@/lib/admin-api";
+import { parseKdpReport } from "@/lib/kdp";
 import { bookForSale, formatCents, summarize, type ClickData, type SaleRow } from "@/lib/sales";
+import { readXlsx } from "@/lib/xlsx";
 import { AUDIENCES, CATEGORIES, STATUSES, labelOf } from "@/lib/suggestions";
 
 export const Route = createFileRoute("/admin/")({
@@ -195,6 +198,7 @@ function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }) {
               <div className="flex justify-between gap-2"><dt>Digital PDFs sold (Payhip)</dt><dd className="font-semibold">{s.digitalUnits}</dd></div>
               <div className="flex justify-between gap-2"><dt>Digital revenue</dt><dd className="font-semibold">{formatCents(s.digitalCents)}</dd></div>
               <div className="flex justify-between gap-2"><dt>Paperbacks sold (Amazon)</dt><dd className="font-semibold">{s.paperbackUnits}</dd></div>
+              <div className="flex justify-between gap-2"><dt>Amazon royalties (USD)</dt><dd className="font-semibold">{formatCents(s.amazonRoyaltyUsdCents)}</dd></div>
               <div className="flex justify-between gap-2"><dt>"Buy on Amazon" clicks</dt><dd className="font-semibold">{s.clicksTotal} <span className="font-normal text-muted-foreground">({s.clicks30d} in 30 days)</span></dd></div>
             </dl>
           </div>
@@ -203,6 +207,8 @@ function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }) {
       <p className="mt-4 text-sm text-muted-foreground">
         Digital sales arrive automatically from Payhip. Amazon paperback sales come from KDP reports you upload. Clicks show interest, not sales.
       </p>
+
+      <KdpUpload />
 
       <h2 className="mt-8 text-2xl font-semibold">Recent sales</h2>
       <ul className="mt-3 space-y-2">
@@ -221,6 +227,56 @@ function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }) {
         {!recent.length && <li className="text-center text-muted-foreground">No sales recorded yet.</li>}
       </ul>
     </>
+  );
+}
+
+function KdpUpload() {
+  const qc = useQueryClient();
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  async function onFile(file: File | undefined) {
+    if (!file) return;
+    setBusy(true);
+    setMsg(null);
+    try {
+      const { rows, skipped, foundSheets } = parseKdpReport(await readXlsx(await file.arrayBuffer()));
+      if (!foundSheets.length) {
+        setMsg({ ok: false, text: "This doesn't look like a KDP Orders report. Download it from KDP Reports → Orders → Download report." });
+      } else if (!rows.length) {
+        setMsg({ ok: true, text: `No sales in this report${skipped ? ` (${skipped} rows couldn't be read)` : ""}. Nothing to add yet.` });
+      } else {
+        for (let i = 0; i < rows.length; i += 5000) await importSales(rows.slice(i, i + 5000));
+        await qc.invalidateQueries({ queryKey: ["admin"] });
+        setMsg({ ok: true, text: `Added ${rows.length} sales rows from the report${skipped ? `; ${skipped} rows couldn't be read` : ""}. Re-uploading the same dates updates them instead of double-counting.` });
+      }
+    } catch {
+      setMsg({ ok: false, text: "Couldn't read that file. Make sure it's the .xlsx report downloaded from KDP." });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <div className="card-soft mt-6 p-5">
+      <h2 className="text-xl font-semibold">Upload a KDP report</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        In KDP, go to Reports → Orders → Download report, then choose the .xlsx file here. Upload a new one whenever you want the paperback numbers updated.
+      </p>
+      <input
+        type="file"
+        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        aria-label="KDP report file"
+        disabled={busy}
+        className="mt-3 block text-sm"
+        onChange={(e) => {
+          void onFile(e.target.files?.[0]);
+          e.target.value = "";
+        }}
+      />
+      {busy && <p className="mt-2 text-sm">Reading the report…</p>}
+      {msg && <p role="status" className={`mt-2 text-sm font-semibold ${msg.ok ? "text-success" : "text-destructive"}`}>{msg.text}</p>}
+    </div>
   );
 }
 
