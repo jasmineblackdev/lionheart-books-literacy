@@ -1,30 +1,52 @@
+import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
+import { classSetSchema } from "@/lib/class-sets";
+import { submitClassSetInquiry } from "@/lib/class-sets.functions";
 import { EMAIL } from "@/lib/site";
 
 type Status = "idle" | "sending" | "sent" | "error";
-const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ClassSetForm() {
+  const submit = useServerFn(submitClassSetInquiry);
   const [status, setStatus] = useState<Status>("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState("");
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const d = Object.fromEntries(new FormData(e.currentTarget)) as { name?: string; org?: string; email?: string; quantity?: string; message?: string };
-    const errs: { [k: string]: string } = {};
-    if (!d.name?.trim()) errs["name"] = "Please enter your name.";
-    if (!d.org?.trim()) errs["org"] = "Please enter your school or organization.";
-    if (!emailRe.test(d.email ?? "")) errs["email"] = "Please enter a valid email address.";
-    if (!d.quantity || Number(d.quantity) < 1) errs["quantity"] = "Please enter an approximate quantity.";
-    setErrors(errs);
-    if (Object.keys(errs).length) {
+    if (status === "sending") return;
+    const fd = new FormData(e.currentTarget);
+    const input = {
+      name: String(fd.get("name") ?? ""),
+      org: String(fd.get("org") ?? ""),
+      email: String(fd.get("email") ?? ""),
+      quantity: String(fd.get("quantity") ?? ""),
+      message: String(fd.get("message") ?? ""),
+      website: String(fd.get("website") ?? ""),
+    };
+    const parsed = classSetSchema.safeParse(input);
+    if (!parsed.success) {
+      const errs: Record<string, string> = {};
+      for (const i of parsed.error.issues) errs[String(i.path[0])] ??= i.message;
+      setErrors(errs);
+      setFormError("Please fix the highlighted fields.");
       setStatus("error");
       return;
     }
+    setErrors({});
+    setFormError("");
     setStatus("sending");
-    const body = `Name: ${d.name}\nSchool/organization: ${d.org}\nEmail: ${d.email}\nApprox. quantity: ${d.quantity}\n\n${d.message ?? ""}`;
-    window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent("Class-set inquiry: " + d.org)}&body=${encodeURIComponent(body)}`;
-    setTimeout(() => setStatus("sent"), 600);
+    try {
+      const res = await submit({ data: parsed.data });
+      if (res.ok) setStatus("sent");
+      else {
+        setFormError(res.error);
+        setStatus("error");
+      }
+    } catch {
+      setFormError(`Something went wrong sending your inquiry. Please check your connection and try again, or email ${EMAIL} directly.`);
+      setStatus("error");
+    }
   }
 
   const field = "mt-1 w-full rounded-xl border border-input bg-card px-4 py-3 text-base";
@@ -34,20 +56,17 @@ export function ClassSetForm() {
   if (status === "sent") {
     return (
       <div role="status" className="card-soft p-6">
-        <h3 className="text-2xl font-semibold text-success">Your email is ready to send</h3>
-        <p className="mt-2">
-          Your email app should have opened with your inquiry filled in. Press send there to reach us. If nothing opened, email{" "}
-          <a href={`mailto:${EMAIL}`} className="font-bold underline">{EMAIL}</a> directly.
-        </p>
+        <h3 className="text-2xl font-semibold text-success">Thanks! Your inquiry was sent</h3>
+        <p className="mt-2">We'll reply to the email address you gave us with options for your class set.</p>
         <button className="btn btn-outline mt-4" onClick={() => setStatus("idle")}>Send another inquiry</button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={onSubmit} noValidate className="card-soft grid gap-4 p-6 sm:grid-cols-2">
-      {status === "error" && (
-        <p role="alert" className="text-sm font-semibold text-destructive sm:col-span-2">Please fix the highlighted fields.</p>
+    <form onSubmit={onSubmit} noValidate className="card-soft relative grid gap-4 p-6 sm:grid-cols-2">
+      {formError && (
+        <p role="alert" className="text-sm font-semibold text-destructive sm:col-span-2">{formError}</p>
       )}
       {[
         { k: "name", label: "Your name", type: "text", ac: "name" },
@@ -71,14 +90,21 @@ export function ClassSetForm() {
       ))}
       <label className="font-semibold sm:col-span-2">
         Message <span className="font-normal text-muted-foreground">(optional: which books, grade, timing)</span>
-        <textarea name="message" rows={4} className={field} />
+        <textarea name="message" rows={4} maxLength={2000} className={field} />
+        {err("message")}
       </label>
+
+      {/* Honeypot for bots; hidden from people and screen readers */}
+      <div aria-hidden className="absolute -left-[9999px]">
+        <label>Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+      </div>
+
       <div className="sm:col-span-2">
-        <button type="submit" disabled={status === "sending"} className="btn btn-primary w-full sm:w-auto">
-          {status === "sending" ? "Opening your email…" : "Send class-set inquiry"}
+        <button type="submit" disabled={status === "sending"} className="btn btn-primary w-full sm:w-auto disabled:opacity-60">
+          {status === "sending" ? "Sending…" : "Send class-set inquiry"}
         </button>
         <p className="mt-3 text-sm text-muted-foreground">
-          This opens your email app with your details filled in. We'll reply with options; pricing depends on your order.
+          We'll reply by email with options; pricing depends on your order.
         </p>
       </div>
     </form>

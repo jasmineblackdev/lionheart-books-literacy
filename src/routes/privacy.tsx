@@ -27,7 +27,7 @@ function Privacy() {
       <p>We send book-release update emails only if you separately tick the release-updates box. Submitting a suggestion never subscribes you automatically, and you can ask us to unsubscribe you or delete your suggestion at any time by email.</p>
       <p>To stop spam we keep a one-way scrambled version of your network address for a short rate limit. We can't read your actual address from it.</p>
       <h2 className="pt-4 text-2xl font-semibold">Class-set inquiries</h2>
-      <p>The class-set inquiry form does not send data to our servers. It opens your own email app with your details filled in, and you choose whether to send it.</p>
+      <p>When you send a class-set inquiry, the details you enter (name, school, email, quantity and message) are emailed to us through our email delivery provider, Resend. We use them only to reply to your inquiry and don't add you to any mailing list.</p>
       <p>"Buy on Amazon" links take you to Amazon, which has its own privacy policy.</p>
        <p>Digital purchases are processed by Payhip; their privacy policy applies to checkout.</p>
       <p>Questions? Email <a href={`mailto:${EMAIL}`} className="font-bold underline">{EMAIL}</a>.</p>
