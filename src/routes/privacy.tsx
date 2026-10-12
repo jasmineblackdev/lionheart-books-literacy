@@ -23,7 +23,7 @@ function Privacy() {
         send a suggestion for you.
       </p>
       <h2 className="pt-4 text-2xl font-semibold">Book suggestions</h2>
-      <p>When you suggest a book, we store the category, audience and idea you choose so we can evaluate future publishing ideas. Your email is optional; if you give one, we use it only to follow up on your idea.</p>
+      <p>When you suggest a book, we store the category, audience and idea you choose so we can evaluate future publishing ideas. A copy of each suggestion is emailed to us through our email delivery provider, Resend. Your email is optional; if you give one, we use it only to follow up on your idea.</p>
       <p>We send book-release update emails only if you separately tick the release-updates box. Submitting a suggestion never subscribes you automatically, and you can ask us to unsubscribe you or delete your suggestion at any time by email.</p>
       <p>To stop spam we keep a one-way scrambled version of your network address for a short rate limit. We can't read your actual address from it.</p>
       <h2 className="pt-4 text-2xl font-semibold">Class-set inquiries</h2>

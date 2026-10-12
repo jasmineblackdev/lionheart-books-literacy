@@ -53,3 +53,17 @@ export const labelOf = (list: readonly { value: string; label: string }[], v: st
 
 /** Max suggestions per visitor (by hashed IP) per hour. */
 export const RATE_LIMIT_PER_HOUR = 5;
+
+export function suggestionEmail(d: z.output<typeof suggestionSchema>) {
+  return {
+    subject: `New book suggestion: ${labelOf(CATEGORIES, d.category)}`,
+    text: [
+      `Kind of book: ${labelOf(CATEGORIES, d.category)}`,
+      `For: ${labelOf(AUDIENCES, d.intended_audience)}`,
+      `Email: ${d.email || "(not given)"}`,
+      `Wants release updates: ${d.email && d.marketing_consent ? "Yes" : "No"}`,
+      "",
+      d.idea || "(no idea text)",
+    ].join("\n"),
+  };
+}

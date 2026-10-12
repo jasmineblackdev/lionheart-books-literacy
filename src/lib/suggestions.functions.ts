@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { RATE_LIMIT_PER_HOUR, statusSchema, suggestionSchema } from "./suggestions";
+import { RATE_LIMIT_PER_HOUR, statusSchema, suggestionEmail, suggestionSchema } from "./suggestions";
 
 async function hashIp(ip: string) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("lionheart:" + ip));
@@ -38,6 +38,9 @@ export const submitSuggestion = createServerFn({ method: "POST" })
       console.error("suggestion insert failed", error.message);
       return { ok: false as const, error: "Something went wrong saving your idea. Please try again." };
     }
+    // The suggestion is already saved, so a failed notification email doesn't fail the submission.
+    const { emailOwner } = await import("./email.server");
+    await emailOwner({ ...suggestionEmail(data), replyTo: data.email || undefined });
     return { ok: true as const };
   });
 

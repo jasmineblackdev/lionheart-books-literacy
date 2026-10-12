@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { suggestionSchema } from "@/lib/suggestions";
+import { suggestionEmail, suggestionSchema } from "@/lib/suggestions";
 
 const base = { category: "puzzles", intended_audience: "7-10" };
 
@@ -21,5 +21,20 @@ describe("book suggestion rules", () => {
   });
   it("rejects a filled honeypot field", () => {
     expect(suggestionSchema.safeParse({ ...base, website: "spam.com" }).success).toBe(false);
+  });
+});
+
+describe("book suggestion email", () => {
+  it("summarizes the suggestion for the owner's inbox", () => {
+    const d = suggestionSchema.parse({ ...base, idea: "A dinosaur maze book", email: "fan@home.com", marketing_consent: true });
+    expect(suggestionEmail(d)).toEqual({
+      subject: "New book suggestion: Puzzles & brain games",
+      text: "Kind of book: Puzzles & brain games\nFor: Ages 7–10\nEmail: fan@home.com\nWants release updates: Yes\n\nA dinosaur maze book",
+    });
+  });
+  it("notes when no email or idea was given", () => {
+    expect(suggestionEmail(suggestionSchema.parse(base)).text).toBe(
+      "Kind of book: Puzzles & brain games\nFor: Ages 7–10\nEmail: (not given)\nWants release updates: No\n\n(no idea text)",
+    );
   });
 });
