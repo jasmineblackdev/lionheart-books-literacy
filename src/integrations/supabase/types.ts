@@ -50,6 +50,42 @@ export type Database = {
         }
         Relationships: []
       }
+      class_set_inquiries: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          ip_hash: string | null
+          message: string | null
+          name: string
+          org: string
+          quantity: number
+          status: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          ip_hash?: string | null
+          message?: string | null
+          name: string
+          org: string
+          quantity: number
+          status?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          ip_hash?: string | null
+          message?: string | null
+          name?: string
+          org?: string
+          quantity?: number
+          status?: string
+        }
+        Relationships: []
+      }
       site_admins: {
         Row: {
           created_at: string
