@@ -161,7 +161,7 @@ export const books: [Book, Book, Book] = [
       "Answer key included for seek-and-find challenges",
     ],
     price: "$10.99",
-    paperbackAvailable: false,
+    paperbackAvailable: true,
     digital: { price: "$6.99", url: "https://payhip.com/b/fNdyi" },
     cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),
