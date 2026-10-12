@@ -15,7 +15,7 @@ import sampleCursive from "@/assets/sample-cursive.pdf";
 export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
 
-// TODO(owner): swap these Amazon search links for each book's exact listing URL.
+// TODO(owner): swap the remaining Amazon search link (ABC Animal Adventure) for its exact listing URL.
 const amazonSearch = (q: string) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
 
 export type Preview = { src: string; alt: string };
@@ -119,7 +119,7 @@ export const books: [Book, Book, Book] = [
     digital: { price: "$7.99", url: "https://payhip.com/b/qaUHk" },
     pages: "128 pages",
     cover: cursiveCover,
-    amazon: amazonSearch("Cursive Safari J. B. Lionheart"),
+    amazon: "https://www.amazon.com/dp/B0HMP263KH",
     previews: [
       { src: curI, alt: "Cursive Safari page: Letter i with stroke steps, a start dot and tracing rows" },
       { src: curA, alt: "Cursive Safari page: Capital A with stroke steps, tracing rows and the sentence An antelope is fast" },
@@ -161,7 +161,7 @@ export const books: [Book, Book, Book] = [
       "Answer key included for seek-and-find challenges",
     ],
     price: "$10.99",
-    paperbackAvailable: true,
+    paperbackAvailable: false,
     digital: { price: "$6.99", url: "https://payhip.com/b/fNdyi" },
     cover: guideCover,
     amazon: amazonSearch("Rory's Safari Field Guide J. B. Lionheart"),

@@ -36,6 +36,7 @@ function Index() {
             <Link to="/" hash="books" className="btn btn-primary">Explore the Books</Link>
             <Link to="/teachers" className="btn btn-outline">Get Free Sample Pages</Link>
           </div>
+          <p className="mt-3 text-sm text-muted-foreground">Now available on Amazon.</p>
         </div>
         <div className="relative mx-auto h-[270px] w-full max-w-md sm:h-[420px]" aria-hidden>
           <img src={books[0].cover} alt="" width={621} height={810} className="absolute left-0 top-10 w-[48%] -rotate-6 rounded-lg shadow-lift" />

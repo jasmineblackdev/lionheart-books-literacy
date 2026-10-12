@@ -12,9 +12,9 @@ export function AmazonButton({ book, className = "" }: { book: Book; className?:
       href={book.amazon}
       target="_blank"
       rel="noopener noreferrer"
-      aria-label={`Buy ${book.short} on Amazon`}
+      aria-label={`Buy ${book.short} on Amazon${book.price ? ` – ${book.price}` : ""}`}
     >
-      Buy on Amazon
+      Buy on Amazon{book.price && ` – ${book.price}`}
     </a>
     </Button>
   );
