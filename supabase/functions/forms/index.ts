@@ -1,16 +1,17 @@
-// Saves public form submissions (book suggestions, class-set inquiries) for the site,
+// Saves public form submissions (book suggestions, class-set inquiries) and "Buy on
+// Amazon" click counts for the site,
 // which is hosted outside Lovable Cloud and so has no database service key of its own.
 // Only the site's server may call this: it must send the shared FORMS_SECRET, which is
 // set both here (Lovable Cloud secret) and on the site host (Vercel env var). The site
 // validates input first; this function re-checks shapes and lengths before inserting.
 import { createClient } from "npm:@supabase/supabase-js@2";
 
-const RATE_LIMIT_PER_HOUR = 5;
 const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
 const CATEGORIES = ["coloring", "handwriting", "puzzles", "animal-facts", "other"];
 const AUDIENCES = ["3-6", "7-10", "11+", "adults", "teachers"];
+const BOOK_SLUGS = ["abc-animal-adventure", "cursive-safari", "rorys-safari-field-guide"];
 const str = (v: unknown, min: number, max: number) =>
   typeof v === "string" && v.trim().length >= min && v.length <= max;
 
@@ -47,9 +48,15 @@ function classSetRow(r: Record<string, unknown>) {
   };
 }
 
+function clickRow(r: Record<string, unknown>) {
+  return BOOK_SLUGS.includes(r.book_slug as string) ? { book_slug: r.book_slug as string } : null;
+}
+
+// perHour: max rows per visitor (hashed IP) per hour for each kind.
 const TABLES = {
-  suggestion: { table: "book_suggestions", build: suggestionRow },
-  class_set: { table: "class_set_inquiries", build: classSetRow },
+  suggestion: { table: "book_suggestions", build: suggestionRow, perHour: 5 },
+  class_set: { table: "class_set_inquiries", build: classSetRow, perHour: 5 },
+  amazon_click: { table: "amazon_clicks", build: clickRow, perHour: 30 },
 } as const;
 
 Deno.serve(async (req) => {
@@ -82,7 +89,7 @@ Deno.serve(async (req) => {
       .select("id", { count: "exact", head: true })
       .eq("ip_hash", ip_hash)
       .gte("created_at", since);
-    if ((count ?? 0) >= RATE_LIMIT_PER_HOUR) return json({ ok: false, error: "rate_limited" }, 429);
+    if ((count ?? 0) >= target.perHour) return json({ ok: false, error: "rate_limited" }, 429);
   }
   const { error } = await db.from(target.table).insert({ ...row, ip_hash });
   if (error) {

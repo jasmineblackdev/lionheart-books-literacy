@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { recordAmazonClick } from "@/lib/clicks.functions";
 import type { Book } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 
@@ -12,6 +13,7 @@ export function AmazonButton({ book, className = "" }: { book: Book; className?:
       href={book.amazon}
       target="_blank"
       rel="noopener noreferrer"
+      onClick={() => void recordAmazonClick({ data: { slug: book.slug } }).catch(() => {})}
       aria-label={`Buy ${book.short} on Amazon${book.price ? ` – ${book.price}` : ""}`}
     >
       Buy on Amazon{book.price && ` – ${book.price}`}

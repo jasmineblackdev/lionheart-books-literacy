@@ -11,7 +11,8 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "test:edge": "node scripts/edge-test/run.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"

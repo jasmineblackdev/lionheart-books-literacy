@@ -17,7 +17,7 @@ export async function requestIpHash() {
   return hashIp(ip);
 }
 
-export async function saveSubmission(type: "suggestion" | "class_set", row: Record<string, unknown>, ip_hash: string): Promise<SaveResult> {
+export async function saveSubmission(type: "suggestion" | "class_set" | "amazon_click", row: Record<string, unknown>, ip_hash: string): Promise<SaveResult> {
   const base = (import.meta.env["VITE_SUPABASE_URL"] as string | undefined) ?? process.env["SUPABASE_URL"];
   const secret = process.env["FORMS_SECRET"];
   if (!base || !secret) {

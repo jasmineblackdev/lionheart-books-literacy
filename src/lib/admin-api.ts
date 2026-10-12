@@ -1,5 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import type { ClickData, SaleRow } from "./sales";
 
 // Browser-side client for the private `admin` edge function (supabase/functions/admin).
 // It sends the signed-in admin's access token; the function checks site_admins.
@@ -7,7 +8,7 @@ import type { Database } from "@/integrations/supabase/types";
 type Tables = Database["public"]["Tables"];
 export type SuggestionRow = Omit<Tables["book_suggestions"]["Row"], "ip_hash">;
 export type InquiryRow = Omit<Tables["class_set_inquiries"]["Row"], "ip_hash">;
-export type AdminData = { suggestions: SuggestionRow[]; inquiries: InquiryRow[] };
+export type AdminData = { suggestions: SuggestionRow[]; inquiries: InquiryRow[]; sales: SaleRow[]; clicks: ClickData };
 
 export const INQUIRY_STATUSES = [
   { value: "new", label: "New" },
@@ -48,6 +49,10 @@ export const loadAdminData = () => callAdmin<AdminData>({ action: "list" });
 
 export const setAdminStatus = (kind: "suggestion" | "class_set", id: string, status: string) =>
   callAdmin<{ ok: true }>({ action: "set_status", kind, id, status });
+
+export type SaleImport = Omit<SaleRow, "id" | "source"> & { external_id: string };
+
+export const importSales = (rows: SaleImport[]) => callAdmin<{ ok: true; imported: number }>({ action: "import_sales", rows });
 
 /** Opens a Gmail compose window replying to a class-set inquiry. */
 export function gmailReplyUrl(r: Pick<InquiryRow, "email" | "org">) {

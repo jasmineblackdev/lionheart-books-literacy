@@ -12,6 +12,7 @@ import {
   type InquiryRow,
   type SuggestionRow,
 } from "@/lib/admin-api";
+import { bookForSale, formatCents, summarize, type ClickData, type SaleRow } from "@/lib/sales";
 import { AUDIENCES, CATEGORIES, STATUSES, labelOf } from "@/lib/suggestions";
 
 export const Route = createFileRoute("/admin/")({
@@ -84,7 +85,7 @@ function SignIn() {
 function Dashboard({ email }: { email: string }) {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["admin"], queryFn: loadAdminData, retry: false });
-  const [tab, setTab] = useState<"inquiries" | "suggestions">("inquiries");
+  const [tab, setTab] = useState<"inquiries" | "suggestions" | "sales">("inquiries");
   const [saving, setSaving] = useState<string | null>(null);
   const signOut = () => supabase.auth.signOut();
 
@@ -112,7 +113,8 @@ function Dashboard({ email }: { email: string }) {
   if (q.isError || !q.data)
     return <Msg title="Couldn't load the dashboard" onSignOut={signOut}>Try refreshing the page.</Msg>;
 
-  const { inquiries, suggestions } = q.data;
+  // sales/clicks default to empty in case the admin function predates them.
+  const { inquiries, suggestions, sales = [], clicks = { recent: [], totals: {} } } = q.data;
   const newCount = (rows: { status: string }[]) => rows.filter((r) => r.status === "new").length;
   const tabBtn = (t: typeof tab, label: string, n: number) => (
     <button
@@ -136,12 +138,11 @@ function Dashboard({ email }: { email: string }) {
       <div role="tablist" className="mt-6 flex flex-wrap gap-2">
         {tabBtn("inquiries", "Class-set inquiries", newCount(inquiries))}
         {tabBtn("suggestions", "Book suggestions", newCount(suggestions))}
+        {tabBtn("sales", "Sales", 0)}
       </div>
-      {tab === "inquiries" ? (
-        <Inquiries rows={inquiries} saving={saving} onStatus={(id, s) => setStatus("class_set", id, s)} />
-      ) : (
-        <Suggestions rows={suggestions} saving={saving} onStatus={(id, s) => setStatus("suggestion", id, s)} />
-      )}
+      {tab === "inquiries" && <Inquiries rows={inquiries} saving={saving} onStatus={(id, s) => setStatus("class_set", id, s)} />}
+      {tab === "suggestions" && <Suggestions rows={suggestions} saving={saving} onStatus={(id, s) => setStatus("suggestion", id, s)} />}
+      {tab === "sales" && <Sales sales={sales} clicks={clicks} />}
     </section>
   );
 }
@@ -176,6 +177,48 @@ function Inquiries({ rows, saving, onStatus }: { rows: InquiryRow[]; saving: str
           </li>
         ))}
         {!shown.length && <li className="text-center text-muted-foreground">No inquiries yet.</li>}
+      </ul>
+    </>
+  );
+}
+
+function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }) {
+  const summary = summarize(sales, clicks);
+  const recent = sales.slice(0, 50);
+  return (
+    <>
+      <div className="mt-6 grid gap-4 md:grid-cols-3">
+        {summary.map((s) => (
+          <div key={s.book.slug} className="card-soft p-5">
+            <h2 className="text-xl font-semibold">{s.book.short}</h2>
+            <dl className="mt-3 space-y-2 text-sm">
+              <div className="flex justify-between gap-2"><dt>Digital PDFs sold (Payhip)</dt><dd className="font-semibold">{s.digitalUnits}</dd></div>
+              <div className="flex justify-between gap-2"><dt>Digital revenue</dt><dd className="font-semibold">{formatCents(s.digitalCents)}</dd></div>
+              <div className="flex justify-between gap-2"><dt>Paperbacks sold (Amazon)</dt><dd className="font-semibold">{s.paperbackUnits}</dd></div>
+              <div className="flex justify-between gap-2"><dt>"Buy on Amazon" clicks</dt><dd className="font-semibold">{s.clicksTotal} <span className="font-normal text-muted-foreground">({s.clicks30d} in 30 days)</span></dd></div>
+            </dl>
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 text-sm text-muted-foreground">
+        Digital sales arrive automatically from Payhip. Amazon paperback sales come from KDP reports you upload. Clicks show interest, not sales.
+      </p>
+
+      <h2 className="mt-8 text-2xl font-semibold">Recent sales</h2>
+      <ul className="mt-3 space-y-2">
+        {recent.map((r) => (
+          <li key={r.id} className="card-soft flex flex-wrap items-center justify-between gap-2 p-4 text-sm">
+            <span>
+              {new Date(r.sold_at).toLocaleDateString()} · {bookForSale(r)?.short ?? r.product_name ?? "Unknown product"} · {r.format ?? (r.source === "payhip" ? "Digital PDF" : "Paperback")}
+              {r.marketplace ? ` · ${r.marketplace}` : ""}
+            </span>
+            <span className="font-semibold">
+              {r.kind === "refund" ? "Refund · " : ""}{r.quantity} × {r.source === "payhip" ? "Payhip" : "Amazon"}
+              {r.amount_cents != null ? ` · ${formatCents(r.amount_cents, r.currency ?? "USD")}` : ""}
+            </span>
+          </li>
+        ))}
+        {!recent.length && <li className="text-center text-muted-foreground">No sales recorded yet.</li>}
       </ul>
     </>
   );

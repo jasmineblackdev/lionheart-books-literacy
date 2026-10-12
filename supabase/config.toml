@@ -7,3 +7,6 @@ verify_jwt = false
 
 [functions.admin]
 verify_jwt = false
+
+[functions.payhip-webhook]
+verify_jwt = false
