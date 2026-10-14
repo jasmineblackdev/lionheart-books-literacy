@@ -3,6 +3,7 @@ import { Download, FileText, GraduationCap, School } from "lucide-react";
 import { ComingSoonBadge } from "@/components/book-bits";
 import { ClassSetForm } from "@/components/class-set-form";
 import { books, CATEGORIES, comingSoon, pageHead } from "@/lib/site";
+import { responsive } from "@/lib/images";
 
 export const Route = createFileRoute("/teachers")({
   head: () =>
@@ -58,7 +59,7 @@ function Teachers() {
             {withSamples.map((b) => (
               <article key={b.slug} className="flex flex-col rounded-[1.25rem] border bg-card p-6 shadow-soft">
                 <div className="flex gap-5">
-                  <img src={b.cover} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="w-24 shrink-0 rounded-md shadow-soft" />
+                  <img {...responsive(b.cover, "96px")} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="h-auto w-24 shrink-0 self-start rounded-md shadow-soft" />
                   <div className="min-w-0">
                     <p className="eyebrow">{b.ages}</p>
                     <h3 className="mt-1 text-2xl font-extrabold leading-tight">{b.short}</h3>

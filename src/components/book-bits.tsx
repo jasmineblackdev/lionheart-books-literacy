@@ -3,6 +3,7 @@ import { recordAmazonClick } from "@/lib/clicks.functions";
 import { isUpcoming } from "@/lib/catalog";
 import type { Book, UpcomingBook } from "@/lib/site";
 import { Button } from "@/components/ui/button";
+import { responsive } from "@/lib/images";
 
 export function AmazonButton({ book, className = "", showPrice = true }: { book: Book; className?: string; showPrice?: boolean }) {
   if (!book.paperbackAvailable) {
@@ -15,7 +16,7 @@ export function AmazonButton({ book, className = "", showPrice = true }: { book:
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => void recordAmazonClick({ data: { slug: book.slug } }).catch(() => {})}
-      aria-label={`Buy ${book.short} on Amazon${book.price ? ` – ${book.price}` : ""}`}
+      aria-label={`Buy on Amazon${showPrice && book.price ? ` – ${book.price}` : ""}: ${book.short} paperback`}
     >
       Buy on Amazon{showPrice && book.price && ` – ${book.price}`}
     </a>
@@ -32,7 +33,7 @@ export function BookCard({ book, headingLevel = 3 }: { book: Book | UpcomingBook
       <div className="relative bg-sage-soft px-8 pb-5 pt-10 sm:pb-6 sm:pt-8">
         {upcoming && <ComingSoonBadge className="absolute left-4 top-4 z-10 shadow-soft" />}
         <img
-          src={book.cover}
+          {...responsive(book.cover, "(min-width: 640px) 240px, 176px")}
           alt={`${book.title} book cover`}
           width={621}
           height={810}

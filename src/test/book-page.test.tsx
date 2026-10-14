@@ -11,10 +11,10 @@ describe("purchase panel", () => {
   it("uses each book's exact Amazon and Payhip links and counts Amazon clicks", () => {
     for (const b of books) {
       const { unmount } = render(<PurchasePanel book={b} />);
-      const amazon = screen.getByRole("link", { name: new RegExp(`Buy ${b.short} on Amazon`) });
+      const amazon = screen.getByRole("link", { name: new RegExp(`^Buy on Amazon: ${b.short} paperback$`) });
       expect(amazon).toHaveAttribute("href", b.amazon);
       expect(amazon).toHaveAttribute("target", "_blank");
-      expect(screen.getByRole("link", { name: /digital PDF on Payhip/ })).toHaveAttribute("href", b.digital.url);
+      expect(screen.getByRole("link", { name: /^Buy on Payhip: .* digital PDF/ })).toHaveAttribute("href", b.digital.url);
       fireEvent.click(amazon);
       expect(recordAmazonClick).toHaveBeenLastCalledWith({ data: { slug: b.slug } });
       unmount();

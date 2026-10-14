@@ -3,6 +3,7 @@ import { BookOpenCheck, PawPrint, School, Sparkles, type LucideIcon } from "luci
 import { Faq } from "@/components/book-bits";
 import { Catalog } from "@/components/catalog";
 import { books, comingSoon, EMAIL, generalFaqs, pageHead, rory, SITE_URL } from "@/lib/site";
+import { responsive } from "@/lib/images";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,9 +62,9 @@ function Index() {
           <div className="relative mx-auto h-[300px] w-full max-w-md sm:h-[440px]" aria-hidden>
             <div className="absolute inset-x-6 bottom-0 top-8 rounded-[2.5rem] bg-sage-soft" />
             <div className="absolute -right-4 top-2 size-24 rounded-full bg-honey/60" />
-            <img src={books[0].cover} alt="" width={621} height={810} className="absolute left-0 top-14 w-[46%] -rotate-6 rounded-md shadow-lift" />
-            <img src={books[2].cover} alt="" width={621} height={810} className="absolute right-0 top-14 w-[46%] rotate-6 rounded-md shadow-lift" />
-            <img src={books[1].cover} alt="" width={621} height={810} fetchPriority="high" className="absolute left-1/2 top-2 w-[52%] -translate-x-1/2 rounded-md shadow-lift" />
+            <img {...responsive(books[0].cover, "220px")} alt="" width={621} height={810} className="absolute left-0 top-14 w-[46%] -rotate-6 rounded-md shadow-lift" />
+            <img {...responsive(books[2].cover, "220px")} alt="" width={621} height={810} className="absolute right-0 top-14 w-[46%] rotate-6 rounded-md shadow-lift" />
+            <img {...responsive(books[1].cover, "240px")} alt="" width={621} height={810} fetchPriority="high" className="absolute left-1/2 top-2 w-[52%] -translate-x-1/2 rounded-md shadow-lift" />
           </div>
         </div>
       </section>
@@ -101,10 +102,10 @@ function Index() {
         <h2 className="mt-2 text-4xl font-bold">Peek inside the books</h2>
         <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           {[books[0].previews[1], books[1].previews[0], books[1].previews[1], books[0].previews[0]].filter((p) => p !== undefined).map((p) => (
-            <img key={p.src} src={p.src} alt={p.alt} width={935} height={1210} loading="lazy" className="card-soft aspect-[612/792] w-full object-cover p-0" />
+            <img key={p.src} {...responsive(p.src, "(min-width: 768px) 270px, 45vw")} alt={p.alt} width={935} height={1210} loading="lazy" className="card-soft aspect-[612/792] w-full object-cover p-0" />
           ))}
         </div>
-        <img src={books[2].previews[0]?.src} alt={books[2].previews[0]?.alt ?? ""} width={1000} height={450} loading="lazy" className="card-soft mt-4 w-full" />
+        <img {...responsive(books[2].previews[0]!.src, "(min-width: 1152px) 1120px, 92vw")} alt={books[2].previews[0]?.alt ?? ""} width={1000} height={450} loading="lazy" className="card-soft mt-4 w-full" />
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-16">
@@ -125,7 +126,7 @@ function Index() {
 
       <section className="bg-secondary px-5 py-16">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
-          <img src={rory} alt="Meet Rory sample page: Rory the lion waving, with cursive words lion and Antelope" width={935} height={1210} loading="lazy" className="card-soft mx-auto w-full max-w-sm" />
+          <img {...responsive(rory, "(min-width: 768px) 384px, 90vw")} alt="Meet Rory sample page: Rory the lion waving, with cursive words lion and Antelope" width={935} height={1210} loading="lazy" className="card-soft mx-auto w-full max-w-sm" />
           <div>
             <p className="eyebrow">Your safari guide</p>
             <h2 className="mt-2 text-4xl font-bold">Meet Rory</h2>
@@ -147,7 +148,7 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-5 pb-16">
         <div className="card-soft grid items-center gap-8 bg-secondary p-8 md:grid-cols-[auto_minmax(0,1fr)] md:p-12">
-          <img src={books[2].cover} alt="" width={621} height={810} loading="lazy" className="mx-auto w-32 -rotate-3 rounded-lg shadow-lift md:w-40" />
+          <img {...responsive(books[2].cover, "160px")} alt="" width={621} height={810} loading="lazy" className="mx-auto w-32 -rotate-3 rounded-lg shadow-lift md:w-40" />
           <div>
             <p className="eyebrow">Your ideas matter</p>
             <h2 className="mt-2 text-4xl font-bold">Help Us Choose Our Next Adventure!</h2>

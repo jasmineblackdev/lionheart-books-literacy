@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useRef, useState } from "react";
 import type { Preview } from "@/lib/site";
+import { responsive } from "@/lib/images";
 
 /** Interior-page thumbnails that open a full-size viewer (native <dialog>: focus is
  *  trapped, Esc closes, arrow keys move between pages). */
@@ -30,7 +31,7 @@ export function Gallery({ images, title }: { images: Preview[]; title: string })
               aria-label={`Enlarge page ${i + 1} of ${count}: ${p.alt}`}
               className="group block w-full overflow-hidden rounded-2xl border bg-card p-2 shadow-soft transition-shadow hover:shadow-lift"
             >
-              <img src={p.src} alt="" loading="lazy" decoding="async" className="w-full rounded-xl transition-transform duration-200 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
+              <img {...responsive(p.src, "(min-width: 640px) 360px, 45vw")} alt="" loading="lazy" decoding="async" className="w-full rounded-xl transition-transform duration-200 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
             </button>
           </li>
         ))}
@@ -59,7 +60,7 @@ export function Gallery({ images, title }: { images: Preview[]; title: string })
               </button>
             </div>
             <div className="relative flex min-h-0 flex-1 items-center justify-center bg-secondary p-3">
-              <img src={current.src} alt={current.alt} className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain shadow-soft" />
+              <img src={current.src} alt={current.alt} decoding="async" className="max-h-[75vh] w-auto max-w-full rounded-lg object-contain shadow-soft" />
               {count > 1 && (
                 <>
                   <button type="button" onClick={() => step(-1)} aria-label="Previous page" className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-card p-2 shadow-soft hover:bg-secondary">

@@ -23,7 +23,7 @@ export function PurchasePanel({ book }: { book: Book }) {
           <p className="font-display text-3xl font-extrabold">{book.digital.price}</p>
           <p className="mt-1 flex-1 text-sm text-muted-foreground">Instant download from Payhip. Print at home or trace on a tablet with a stylus.</p>
           <Button asChild variant="bookDigital" size="purchase" className="mt-3 w-full">
-            <a href={book.digital.url} target="_blank" rel="noopener noreferrer" aria-label={`Buy the ${book.short} digital PDF on Payhip – ${book.digital.price}`}>
+            <a href={book.digital.url} target="_blank" rel="noopener noreferrer" aria-label={`Buy on Payhip: ${book.short} digital PDF, ${book.digital.price}`}>
               Buy on Payhip
             </a>
           </Button>
@@ -64,7 +64,7 @@ export function StickyBuyBar({ book }: { book: Book }) {
           <span className="text-muted-foreground">Paperback {book.price} · PDF {book.digital.price}</span>
         </p>
         <AmazonButton book={book} showPrice={false} className="min-h-11 w-auto shrink-0 px-4 py-2 text-sm" />
-        <a href={book.digital.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-sm font-bold underline underline-offset-4" aria-label={`Buy the ${book.short} digital PDF on Payhip – ${book.digital.price}`}>
+        <a href={book.digital.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-sm font-bold underline underline-offset-4" aria-label={`PDF: buy the ${book.short} digital PDF on Payhip, ${book.digital.price}`}>
           PDF
         </a>
       </div>

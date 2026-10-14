@@ -5,6 +5,7 @@ import { Gallery } from "@/components/gallery";
 import { PurchasePanel, StickyBuyBar } from "@/components/purchase";
 import { isUpcoming } from "@/lib/catalog";
 import { books, CATEGORIES, comingSoon, getBook, getUpcomingBook, pageHead, SITE_URL, type Book, type UpcomingBook } from "@/lib/site";
+import { responsive } from "@/lib/images";
 
 export const Route = createFileRoute("/books/$slug")({
   loader: ({ params }) => {
@@ -71,7 +72,7 @@ function BookPage() {
       <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-14 pt-8 md:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] md:gap-14 md:pb-20 md:pt-10">
         <div>
           <div className="rounded-[1.75rem] bg-sage-soft p-6 sm:p-10 md:sticky md:top-24">
-            <img src={b.cover} alt={`${b.title} book cover`} width={621} height={810} fetchPriority="high" className="mx-auto w-full max-w-sm rounded-md shadow-lift" />
+            <img {...responsive(b.cover, "(min-width: 768px) 384px, 80vw")} alt={`${b.title} book cover`} width={621} height={810} fetchPriority="high" className="mx-auto w-full max-w-sm rounded-md shadow-lift" />
           </div>
         </div>
 

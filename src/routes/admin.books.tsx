@@ -5,6 +5,7 @@ import { PageTitle } from "@/components/admin/shell";
 import { useAdminData, withDefaults } from "@/components/admin/use-admin";
 import { formatCents, summarize } from "@/lib/sales";
 import { books, comingSoon } from "@/lib/site";
+import { responsive } from "@/lib/images";
 
 export const Route = createFileRoute("/admin/books")({ component: BooksPage });
 
@@ -26,7 +27,7 @@ function BooksPage() {
           const search = isSearchLink(b.amazon);
           return (
             <li key={b.slug} className="grid gap-5 rounded-2xl border bg-card p-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
-              <img src={b.cover} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="w-32 rounded-lg shadow-soft" />
+              <img {...responsive(b.cover, "128px")} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="h-auto w-32 self-start rounded-lg shadow-soft" />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-2xl font-extrabold">{b.title}</h2>
@@ -82,7 +83,7 @@ function BooksPage() {
           <ul className="mt-4 space-y-4">
             {comingSoon.map((b) => (
               <li key={b.slug} className="grid gap-5 rounded-2xl border bg-card p-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
-                <img src={b.cover} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="w-32 rounded-lg shadow-soft" />
+                <img {...responsive(b.cover, "128px")} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="h-auto w-32 self-start rounded-lg shadow-soft" />
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-2xl font-bold">{b.title}</h3>
