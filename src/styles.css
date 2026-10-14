@@ -107,9 +107,9 @@
   * {
     border-color: var(--color-border);
   }
-  html {
-    scroll-behavior: smooth;
-  }
+  /* No global scroll-behavior: smooth. It made the router's jump to "/#books" and other
+     in-page links animate, and the animation was cancelled mid-navigation, so the page
+     never moved. */
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);

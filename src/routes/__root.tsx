@@ -112,8 +112,27 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+/** Same-page section links (e.g. "/#books" while already at "/#books") don't trigger a
+ *  router navigation, so scroll to the section ourselves. */
+function useSamePageSectionLinks() {
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (e.defaultPrevented && e.button !== 0) return;
+      const a = (e.target as Element | null)?.closest?.("a[href*='#']") as HTMLAnchorElement | null;
+      if (!a || a.target === "_blank") return;
+      const url = new URL(a.href, location.href);
+      if (url.origin !== location.origin || url.pathname !== location.pathname || !url.hash) return;
+      const id = decodeURIComponent(url.hash.slice(1));
+      requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView());
+    };
+    document.addEventListener("click", onClick);
+    return () => document.removeEventListener("click", onClick);
+  }, []);
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  useSamePageSectionLinks();
   // The /admin Publisher Studio has its own layout, without the public header and footer.
   const isAdmin = useRouterState({ select: (s) => s.location.pathname === "/admin" || s.location.pathname.startsWith("/admin/") });
   if (isAdmin)
