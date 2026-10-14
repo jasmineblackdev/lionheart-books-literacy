@@ -37,7 +37,7 @@ export function Catalog() {
       <h3 className="mt-8 text-2xl font-extrabold">Available now</h3>
       {available.length ? (
         <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {available.map((b) => <BookCard key={b.slug} book={b} headingLevel={3} />)}
+          {available.map((b) => <BookCard key={b.slug} book={b} headingLevel={4} />)}
         </div>
       ) : (
         <p className="mt-3 text-muted-foreground">No available books match these filters yet.</p>
@@ -48,7 +48,7 @@ export function Catalog() {
           <h3 className="mt-14 text-2xl font-extrabold">Coming soon</h3>
           <p className="mt-1 text-muted-foreground">New Color, Trace &amp; Roar! books on the way. Preview real pages now.</p>
           <div className="mt-5 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {upcoming.map((b) => <BookCard key={b.slug} book={b} headingLevel={3} />)}
+            {upcoming.map((b) => <BookCard key={b.slug} book={b} headingLevel={4} />)}
           </div>
         </>
       )}

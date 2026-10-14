@@ -2,17 +2,32 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { BookOpenCheck, PawPrint, School, Sparkles, type LucideIcon } from "lucide-react";
 import { Faq } from "@/components/book-bits";
 import { Catalog } from "@/components/catalog";
-import { books, comingSoon, generalFaqs, pageHead, rory } from "@/lib/site";
+import { books, comingSoon, EMAIL, generalFaqs, pageHead, rory, SITE_URL } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
-  head: () =>
-    pageHead({
+  head: () => ({
+    ...pageHead({
       title: "J. B. Lionheart Books | Color, Trace & Roar! Workbooks for Ages 3–10",
       description:
         "Color, Trace & Roar! learning books for kids ages 3–10: alphabet tracing, cursive handwriting, a wild animal coloring field guide, and new reading and math workbooks coming soon. Free sample pages for teachers.",
       path: "/",
       image: books[1].cover,
+      imageAlt: "Cursive Safari book cover with Rory the lion",
     }),
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: "J. B. Lionheart Books",
+          url: SITE_URL,
+          email: EMAIL,
+          founder: { "@type": "Person", name: "J. B. Lionheart" },
+        }),
+      },
+    ],
+  }),
   component: Index,
 });
 

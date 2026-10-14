@@ -365,7 +365,9 @@ export const generalFaqs = [
   { q: "Do you offer class sets for schools?", a: "You can send a class-set inquiry with your quantity. We'll reply with options; pricing depends on the order." },
 ];
 
-export function pageHead(opts: { title: string; description: string; path: string; image?: string }) {
+/** Page metadata: title, description, canonical URL and social-share tags. Pages without
+ *  their own image share the Cursive Safari cover. */
+export function pageHead(opts: { title: string; description: string; path: string; image?: string; imageAlt?: string }) {
   const url = `${SITE_URL}${opts.path}`;
   const meta: Record<string, string>[] = [
     { title: opts.title },
@@ -374,11 +376,16 @@ export function pageHead(opts: { title: string; description: string; path: strin
     { property: "og:description", content: opts.description },
     { property: "og:url", content: url },
     { property: "og:type", content: "website" },
+    { property: "og:site_name", content: "J. B. Lionheart Books" },
     { name: "twitter:card", content: "summary_large_image" },
   ];
-  if (opts.image) {
-    const img = `${SITE_URL}${opts.image}`;
-    meta.push({ property: "og:image", content: img }, { name: "twitter:image", content: img });
-  }
+  const img = `${SITE_URL}${opts.image ?? cursiveCover}`;
+  const alt = opts.imageAlt ?? (opts.image ? "Book cover" : "Cursive Safari book cover with Rory the lion");
+  meta.push(
+    { property: "og:image", content: img },
+    { property: "og:image:alt", content: alt },
+    { name: "twitter:image", content: img },
+    { name: "twitter:image:alt", content: alt },
+  );
   return { meta, links: [{ rel: "canonical", href: url }] };
 }

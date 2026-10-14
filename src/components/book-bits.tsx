@@ -24,9 +24,9 @@ export function AmazonButton({ book, className = "", showPrice = true }: { book:
 }
 
 /** Catalog card for any book: cover, grade, one-line benefit, price (available books only) and View Book. */
-export function BookCard({ book, headingLevel = 3 }: { book: Book | UpcomingBook; headingLevel?: 2 | 3 }) {
+export function BookCard({ book, headingLevel = 3 }: { book: Book | UpcomingBook; headingLevel?: 2 | 3 | 4 }) {
   const upcoming = isUpcoming(book);
-  const H = headingLevel === 2 ? "h2" : "h3";
+  const H = (["h2", "h3", "h4"] as const)[headingLevel - 2]!;
   return (
     <article className="group relative flex flex-col overflow-hidden rounded-[1.25rem] border bg-card shadow-soft transition-shadow hover:shadow-lift has-[a:focus-visible]:shadow-lift has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ring">
       <div className="relative bg-sage-soft px-8 pb-5 pt-10 sm:pb-6 sm:pt-8">

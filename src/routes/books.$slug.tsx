@@ -21,7 +21,16 @@ export const Route = createFileRoute("/books/$slug")({
         : `${b.tagline} ${b.ages}. See real interior pages and buy on Amazon.`,
       path: `/books/${b.slug}`,
       image: b.cover,
+      imageAlt: `${b.title} book cover`,
     });
+    const offers = isUpcoming(b)
+      ? undefined
+      : [
+          ...(b.price && b.paperbackAvailable
+            ? [{ "@type": "Offer", name: "Paperback", price: b.price.replace("$", ""), priceCurrency: "USD", availability: "https://schema.org/InStock", url: b.amazon }]
+            : []),
+          { "@type": "Offer", name: "Digital PDF", price: b.digital.price.replace("$", ""), priceCurrency: "USD", availability: "https://schema.org/InStock", url: b.digital.url },
+        ];
     return {
       ...h,
       scripts: [
@@ -34,7 +43,12 @@ export const Route = createFileRoute("/books/$slug")({
             author: { "@type": "Person", name: "J. B. Lionheart" },
             image: `${SITE_URL}${b.cover}`,
             description: b.description,
+            url: `${SITE_URL}/books/${b.slug}`,
+            inLanguage: "en",
+            typicalAgeRange: `${b.ageRange[0]}-${b.ageRange[1]}`,
+            isPartOf: { "@type": "BookSeries", name: "Color, Trace & Roar!" },
             ...(b.pages ? { numberOfPages: parseInt(b.pages) } : {}),
+            ...(offers ? { offers } : {}),
           }),
         },
       ],
