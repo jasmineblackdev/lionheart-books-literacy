@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookCard, Faq } from "@/components/book-bits";
-import { books, generalFaqs, pageHead, rory } from "@/lib/site";
+import { BookCard, ComingSoonCard, Faq } from "@/components/book-bits";
+import { books, comingSoon, generalFaqs, pageHead, rory } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () =>
@@ -52,6 +52,14 @@ function Index() {
           <div className="mt-10 grid gap-8 md:grid-cols-3">
             {books.map((b) => <BookCard key={b.slug} book={b} />)}
           </div>
+          {comingSoon.length > 0 && (
+            <div className="mt-14">
+              <h2 className="text-center text-3xl font-bold">Coming soon</h2>
+              <div className="mx-auto mt-6 max-w-4xl space-y-6">
+                {comingSoon.map((b) => <ComingSoonCard key={b.slug} book={b} />)}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

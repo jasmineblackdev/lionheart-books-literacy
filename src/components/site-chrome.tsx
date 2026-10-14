@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { books, EMAIL } from "@/lib/site";
+import { books, comingSoon, EMAIL } from "@/lib/site";
 
 const nav = [
   { label: "Home", to: "/" as const },
@@ -68,6 +68,12 @@ export function SiteFooter() {
             {books.map((b) => (
               <li key={b.slug}>
                 <Link to="/books/$slug" params={{ slug: b.slug }} className="underline-offset-4 hover:underline">{b.short}</Link>
+              </li>
+            ))}
+            {comingSoon.map((b) => (
+              <li key={b.slug}>
+                <Link to="/books/$slug" params={{ slug: b.slug }} className="underline-offset-4 hover:underline">{b.short}</Link>{" "}
+                <span className="text-sm opacity-75">(coming soon)</span>
               </li>
             ))}
           </ul>

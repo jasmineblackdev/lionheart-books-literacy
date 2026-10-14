@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { recordAmazonClick } from "@/lib/clicks.functions";
-import type { Book } from "@/lib/site";
+import type { Book, UpcomingBook } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 
 export function AmazonButton({ book, className = "" }: { book: Book; className?: string }) {
@@ -73,6 +73,37 @@ export function BookCard({ book }: { book: Book }) {
             See inside {book.short}
           </Link>
         </div>
+      </div>
+    </article>
+  );
+}
+
+export function ComingSoonBadge({ className = "" }: { className?: string }) {
+  return <span className={`inline-block rounded-full bg-accent px-3 py-1 text-sm font-bold uppercase tracking-wide text-accent-foreground ${className}`}>Coming soon</span>;
+}
+
+/** Wide card for an announced book that isn't for sale yet. */
+export function ComingSoonCard({ book }: { book: UpcomingBook }) {
+  return (
+    <article className="card-soft grid items-center gap-6 overflow-hidden p-6 sm:grid-cols-[12rem_minmax(0,1fr)] md:p-8">
+      <Link to="/books/$slug" params={{ slug: book.slug }} className="mx-auto block w-40 sm:w-48">
+        <img src={book.cover} alt={`${book.title} book cover`} width={621} height={810} loading="lazy" className="w-full rounded-lg shadow-lift" />
+      </Link>
+      <div className="min-w-0">
+        <ComingSoonBadge />
+        <p className="eyebrow mt-3">{book.ages}</p>
+        <h3 className="mt-1 text-3xl font-semibold leading-tight">
+          <Link to="/books/$slug" params={{ slug: book.slug }} className="hover:text-terracotta">{book.title}</Link>
+        </h3>
+        <p className="mt-2 text-muted-foreground">{book.tagline}</p>
+        <ul className="mt-4 space-y-1.5 text-sm">
+          {book.facts.slice(0, 3).map((f) => (
+            <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>
+          ))}
+        </ul>
+        <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline mt-5">
+          See inside {book.short}
+        </Link>
       </div>
     </article>
   );

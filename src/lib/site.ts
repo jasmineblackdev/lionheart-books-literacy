@@ -11,6 +11,10 @@ import curAlpha from "@/assets/cursive-alphabet.jpg";
 import guidePages from "@/assets/field-guide-pages.jpg";
 import sampleAbc from "@/assets/sample-abc.pdf";
 import sampleCursive from "@/assets/sample-cursive.pdf";
+import detectivesCover from "@/assets/reading-detectives-cover.jpg";
+import detectivesPassage from "@/assets/reading-detectives-passage.jpg";
+import detectivesQuestions from "@/assets/reading-detectives-questions.jpg";
+import detectivesColor from "@/assets/reading-detectives-color-by-clue.jpg";
 
 export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
@@ -175,8 +179,59 @@ export const books: [Book, Book, Book] = [
   },
 ];
 
+/** A book that's announced but not for sale yet: no prices, purchase links or sales tracking. */
+export type UpcomingBook = Pick<
+  Book,
+  "title" | "short" | "ages" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
+> & { slug: "safari-reading-detectives"; status: "coming-soon" };
+
+export const comingSoon: UpcomingBook[] = [
+  {
+    slug: "safari-reading-detectives",
+    status: "coming-soon",
+    title: "Safari Reading Detectives",
+    short: "Safari Reading Detectives",
+    ages: "Grades 2–3 · Ages 7–9",
+    goal: "Build reading comprehension",
+    tagline: "40 true animal cases to read, solve and color.",
+    description:
+      "Join Rory the lion on 40 reading cases about real animals, from an ostrich dad on the night shift to a spider that eats its own web. Kids read a short, true passage, answer the questions, and prove each answer with clues from the text. Every case ends with a hands-on Detective Activity.",
+    facts: [
+      "40 true passages that get a little harder unit by unit",
+      "Main idea, details, vocabulary and inference questions",
+      "Color by Clue, dot-to-dots, comics, labeling and word match",
+      "Compare pages with a Venn diagram in every unit",
+      "Answer key, glossary and a Reading Detective certificate",
+      "Every fact checked against zoo, government and science sources",
+    ],
+    parentBenefits: [
+      "One case a day takes about 15–20 minutes, so the book lasts about 10 weeks",
+      "Builds the habit of looking back at the passage to prove each answer",
+      "Answer key, glossary and fact sources at the back",
+    ],
+    teacherBenefits: [
+      "Four-choice questions on main idea, details, vocabulary in context and inference, like state reading tests",
+      "Practice in the reading skills North Carolina students are tested on",
+      "Eight themed units, each ending with a compare-two-animals page",
+    ],
+    pages: "156 pages",
+    cover: detectivesCover,
+    previews: [
+      { src: detectivesPassage, alt: "Safari Reading Detectives Case 1, The Ostrich Nest: a short true passage with a Detective Word, a Fast Fact and an ostrich picture" },
+      { src: detectivesQuestions, alt: "Safari Reading Detectives Solve the Case page: four multiple-choice questions tagged Main Idea, Clue, Word and Why, plus a written answer" },
+      { src: detectivesColor, alt: "Safari Reading Detectives Color by Clue page: an ostrich on its nest to color using clues from the passage" },
+    ],
+    faqs: [
+      { q: "What grade is Safari Reading Detectives for?", a: "Grades 2–3 (ages 7–9). Passages start short in Unit 1 and grow a little longer unit by unit." },
+      { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
+      { q: "What should kids write with?", a: "A pencil and colored pencils. Markers may bleed through the page." },
+    ],
+  },
+];
+
 export const rory = curRory;
 export const getBook = (slug: string) => books.find((b) => b.slug === slug);
+export const getUpcomingBook = (slug: string) => comingSoon.find((b) => b.slug === slug);
 
 export const generalFaqs = [
   { q: "Which book should I start with?", a: "Ages 3–6: ABC Animal Adventure. Grades 2–4 learning cursive: Cursive Safari. Ages 6–10 who love animals: Rory's Safari Field Guide." },

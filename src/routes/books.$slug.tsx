@@ -1,10 +1,12 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { BookCard, Faq, PurchaseButtons } from "@/components/book-bits";
-import { books, getBook, pageHead, SITE_URL } from "@/lib/site";
+import { BookCard, ComingSoonBadge, Faq, PurchaseButtons } from "@/components/book-bits";
+import { books, getBook, getUpcomingBook, pageHead, SITE_URL, type Book, type UpcomingBook } from "@/lib/site";
+
+const isUpcoming = (b: Book | UpcomingBook): b is UpcomingBook => "status" in b && b.status === "coming-soon";
 
 export const Route = createFileRoute("/books/$slug")({
   loader: ({ params }) => {
-    const book = getBook(params.slug);
+    const book: Book | UpcomingBook | undefined = getBook(params.slug) ?? getUpcomingBook(params.slug);
     if (!book) throw notFound();
     return book;
   },
@@ -12,7 +14,9 @@ export const Route = createFileRoute("/books/$slug")({
     if (!b) return {};
     const h = pageHead({
       title: `${b.title} | ${b.ages} | J. B. Lionheart`,
-      description: `${b.tagline} ${b.ages}. See real interior pages and buy on Amazon.`,
+      description: isUpcoming(b)
+        ? `${b.tagline} ${b.ages}. Coming soon from J. B. Lionheart. See real interior pages.`
+        : `${b.tagline} ${b.ages}. See real interior pages and buy on Amazon.`,
       path: `/books/${b.slug}`,
       image: b.cover,
     });
@@ -39,6 +43,7 @@ export const Route = createFileRoute("/books/$slug")({
 
 function BookPage() {
   const b = Route.useLoaderData();
+  const upcoming = isUpcoming(b);
   const related = books.filter((x) => x.slug !== b.slug);
   return (
     <>
@@ -46,17 +51,26 @@ function BookPage() {
         <img src={b.cover} alt={`${b.title} book cover`} width={621} height={810} className="mx-auto w-full max-w-sm rounded-lg shadow-lift" />
         <div>
           <Link to="/" hash="books" className="text-sm font-semibold underline underline-offset-4">← All books</Link>
+          {upcoming && <div className="mt-4"><ComingSoonBadge /></div>}
           <p className="eyebrow mt-4">{b.ages}</p>
           <h1 className="mt-2 text-4xl font-bold leading-tight md:text-5xl">{b.title}</h1>
           <p className="mt-4 text-lg">{b.description}</p>
           {b.pages && <p className="mt-4 text-sm text-muted-foreground">{b.pages}</p>}
-          {b.price && (
-            <p className="mt-3 font-display text-3xl font-bold">
-              Paperback {b.price}
+          {upcoming ? (
+            <p className="mt-6 rounded-xl bg-secondary px-5 py-4 font-semibold">
+              This book is coming soon. Paperback and digital links will appear here as soon as it's available.
             </p>
+          ) : (
+            <>
+              {b.price && (
+                <p className="mt-3 font-display text-3xl font-bold">
+                  Paperback {b.price}
+                </p>
+              )}
+              <div className="mt-6"><PurchaseButtons book={b} /></div>
+            </>
           )}
-          <div className="mt-6"><PurchaseButtons book={b} /></div>
-          {b.sample && (
+          {!upcoming && b.sample && (
             <a href={b.sample.url} download className="btn btn-outline mt-3 w-full sm:w-auto">Download free sample pages</a>
           )}
           <h2 className="mt-10 text-2xl font-semibold">What's inside</h2>
@@ -89,13 +103,13 @@ function BookPage() {
       <section className="mx-auto max-w-3xl px-5 pb-14">
         <h2 className="text-3xl font-bold">Questions about {b.short}</h2>
         <div className="mt-6"><Faq items={b.faqs} /></div>
-        <div className="mx-auto mt-8 max-w-xl"><PurchaseButtons book={b} /></div>
+        {!upcoming && <div className="mx-auto mt-8 max-w-xl"><PurchaseButtons book={b} /></div>}
       </section>
 
       <section className="bg-secondary px-5 py-14">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-3xl font-bold">More Color, Trace & Roar! books</h2>
-          <div className="mt-6 grid gap-8 sm:grid-cols-2">{related.map((r) => <BookCard key={r.slug} book={r} />)}</div>
+        <div className={`mx-auto ${related.length > 2 ? "max-w-6xl" : "max-w-4xl"}`}>
+          <h2 className="text-3xl font-bold">{upcoming ? "Color, Trace & Roar! books available now" : "More Color, Trace & Roar! books"}</h2>
+          <div className={`mt-6 grid gap-8 sm:grid-cols-2 ${related.length > 2 ? "lg:grid-cols-3" : ""}`}>{related.map((r) => <BookCard key={r.slug} book={r} />)}</div>
         </div>
       </section>
     </>
