@@ -1,4 +1,5 @@
 import type { AdminData } from "./admin-api";
+import { isFollowUpDue, todayIso } from "./follow-ups";
 import { bookForSale } from "./sales";
 
 // Numbers for the /admin Overview page, computed only from real dashboard data.
@@ -27,6 +28,8 @@ export type OverviewTotals = {
   suggestionsReceived: number;
   newInquiries: number;
   newSuggestions: number;
+  /** School orders whose follow-up date is today or earlier and that aren't Done. */
+  followUpsDue: number;
 };
 
 export function overviewTotals(d: AdminData, range: Range, now = Date.now()): OverviewTotals {
@@ -53,6 +56,7 @@ export function overviewTotals(d: AdminData, range: Range, now = Date.now()): Ov
     suggestionsReceived: d.suggestions.filter((r) => inRange(r.created_at)).length,
     newInquiries: d.inquiries.filter((r) => r.status === "new").length,
     newSuggestions: d.suggestions.filter((r) => r.status === "new").length,
+    followUpsDue: d.inquiries.filter((r) => isFollowUpDue(r, todayIso(new Date(now)))).length,
   };
 }
 

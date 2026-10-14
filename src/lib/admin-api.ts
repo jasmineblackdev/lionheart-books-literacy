@@ -7,7 +7,13 @@ import type { ClickData, SaleRow } from "./sales";
 
 type Tables = Database["public"]["Tables"];
 export type SuggestionRow = Omit<Tables["book_suggestions"]["Row"], "ip_hash">;
-export type InquiryRow = Omit<Tables["class_set_inquiries"]["Row"], "ip_hash">;
+// notes/follow_up_on were added in supabase/setup/2026-10-12-school-order-notes.sql; the
+// generated Database types predate them, so they're declared here.
+export type InquiryRow = Omit<Tables["class_set_inquiries"]["Row"], "ip_hash"> & {
+  notes: string | null;
+  /** YYYY-MM-DD */
+  follow_up_on: string | null;
+};
 export type AdminData = { suggestions: SuggestionRow[]; inquiries: InquiryRow[]; sales: SaleRow[]; clicks: ClickData };
 
 export const INQUIRY_STATUSES = [
@@ -49,6 +55,9 @@ export const loadAdminData = () => callAdmin<AdminData>({ action: "list" });
 
 export const setAdminStatus = (kind: "suggestion" | "class_set", id: string, status: string) =>
   callAdmin<{ ok: true }>({ action: "set_status", kind, id, status });
+
+export const updateInquiry = (id: string, notes: string, followUpOn: string) =>
+  callAdmin<{ ok: true }>({ action: "update_inquiry", id, notes, follow_up_on: followUpOn });
 
 export type SaleImport = Omit<SaleRow, "id" | "source"> & { external_id: string };
 

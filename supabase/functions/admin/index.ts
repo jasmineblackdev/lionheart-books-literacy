@@ -4,6 +4,7 @@
 //   { action: "list" }                                   → suggestions, inquiries, sales, Amazon clicks
 //   { action: "set_status", kind, id, status }           → update one row's status
 //   { action: "import_sales", rows }                     → upsert Amazon (KDP report) sales rows
+//   { action: "update_inquiry", id, notes, follow_up_on } → save a school order's notes/follow-up date
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const cors = {
@@ -35,7 +36,7 @@ Deno.serve(async (req) => {
   const { data: admin } = await db.from("site_admins").select("user_id").eq("user_id", auth.user.id).maybeSingle();
   if (!admin) return json({ error: "not_admin", userId: auth.user.id }, 403);
 
-  let body: { action?: string; kind?: string; id?: string; status?: string; rows?: unknown };
+  let body: { action?: string; kind?: string; id?: string; status?: string; rows?: unknown; notes?: unknown; follow_up_on?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -52,7 +53,7 @@ Deno.serve(async (req) => {
         .limit(1000),
       db
         .from("class_set_inquiries")
-        .select("id, name, org, email, quantity, message, status, created_at")
+        .select("id, name, org, email, quantity, message, status, notes, follow_up_on, created_at")
         .order("created_at", { ascending: false })
         .limit(1000),
       db
@@ -87,6 +88,18 @@ Deno.serve(async (req) => {
     const { error } = await db.from(kind.table).update({ status: body.status }).eq("id", body.id!);
     if (error) {
       console.error("admin set_status failed", error.message);
+      return json({ error: "update_failed" }, 500);
+    }
+    return json({ ok: true });
+  }
+
+  if (body.action === "update_inquiry") {
+    const notes = body.notes === null || body.notes === "" ? null : typeof body.notes === "string" && body.notes.length <= 5000 ? body.notes : undefined;
+    const date = body.follow_up_on === null || body.follow_up_on === "" ? null : typeof body.follow_up_on === "string" && /^\d{4}-\d{2}-\d{2}$/.test(body.follow_up_on) && !isNaN(Date.parse(body.follow_up_on)) ? body.follow_up_on : undefined;
+    if (!UUID.test(body.id ?? "") || notes === undefined || date === undefined) return json({ error: "invalid" }, 400);
+    const { error } = await db.from("class_set_inquiries").update({ notes, follow_up_on: date }).eq("id", body.id!);
+    if (error) {
+      console.error("admin update_inquiry failed", error.message);
       return json({ error: "update_failed" }, 500);
     }
     return json({ ok: true });

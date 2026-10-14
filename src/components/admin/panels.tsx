@@ -1,7 +1,8 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { INQUIRY_STATUSES, gmailReplyUrl, importSales, type InquiryRow, type SuggestionRow } from "@/lib/admin-api";
+import { INQUIRY_STATUSES, gmailReplyUrl, importSales, updateInquiry, type InquiryRow, type SuggestionRow } from "@/lib/admin-api";
+import { followUpLabel, isFollowUpDue, todayIso } from "@/lib/follow-ups";
 import { parseKdpReport } from "@/lib/kdp";
 import { bookForSale, formatCents, summarize, type ClickData, type SaleRow } from "@/lib/sales";
 import { readXlsx } from "@/lib/xlsx";
@@ -53,37 +54,106 @@ export function SignIn() {
 }
 
 export function Inquiries({ rows, saving, onStatus }: { rows: InquiryRow[]; saving: string | null; onStatus: (id: string, s: string) => void }) {
-  const [status, setStatusFilter] = useState("");
-  const shown = rows.filter((r) => !status || r.status === status);
+  const [filter, setFilter] = useState("");
+  const today = todayIso();
+  const due = rows.filter((r) => isFollowUpDue(r, today));
+  const shown =
+    filter === "follow_up"
+      ? [...due].sort((a, b) => (a.follow_up_on ?? "").localeCompare(b.follow_up_on ?? ""))
+      : rows.filter((r) => !filter || r.status === filter);
   return (
     <>
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <select aria-label="Filter by status" className={sel} value={status} onChange={(e) => setStatusFilter(e.target.value)}>
+        <select aria-label="Filter inquiries" className={sel} value={filter} onChange={(e) => setFilter(e.target.value)}>
           <option value="">All statuses</option>
           {INQUIRY_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+          <option value="follow_up">Follow-ups due ({due.length})</option>
         </select>
         <p className="text-muted-foreground">{rows.length} total · {shown.length} shown</p>
       </div>
       <ul className="mt-6 space-y-3">
-        {shown.map((r) => (
-          <li key={r.id} className="card-soft grid gap-3 p-5 md:grid-cols-[minmax(0,1fr)_auto]">
-            <div className="min-w-0">
-              <p className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
-              <p className="mt-1 font-display text-xl font-semibold">{r.org} · {r.quantity} books</p>
-              <p className="mt-1">{r.name} · <a href={`mailto:${r.email}`} className="underline">{r.email}</a></p>
-              {r.message && <p className="mt-2 whitespace-pre-wrap break-words">{r.message}</p>}
-            </div>
-            <div className="flex flex-col gap-2">
-              <a href={gmailReplyUrl(r)} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Reply in Gmail</a>
-              <select aria-label="Status" className={sel} value={r.status} disabled={saving === r.id} onChange={(e) => onStatus(r.id, e.target.value)}>
-                {INQUIRY_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
-              </select>
-            </div>
-          </li>
-        ))}
-        {!shown.length && <li className="text-center text-muted-foreground">No inquiries yet.</li>}
+        {shown.map((r) => <InquiryCard key={r.id} r={r} today={today} saving={saving === r.id} onStatus={onStatus} />)}
+        {!shown.length && <li className="text-center text-muted-foreground">{filter === "follow_up" ? "No follow-ups due." : "No inquiries yet."}</li>}
       </ul>
     </>
+  );
+}
+
+function InquiryCard({ r, today, saving, onStatus }: { r: InquiryRow; today: string; saving: boolean; onStatus: (id: string, s: string) => void }) {
+  const due = isFollowUpDue(r, today);
+  return (
+    <li className={`card-soft grid gap-4 p-5 md:grid-cols-[minmax(0,1fr)_auto] ${due ? "ring-2 ring-accent" : ""}`}>
+      <div className="min-w-0">
+        <p className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
+        <p className="mt-1 font-display text-xl font-semibold">{r.org} · {r.quantity} books</p>
+        <p className="mt-1">{r.name} · <a href={`mailto:${r.email}`} className="underline">{r.email}</a></p>
+        {r.message && <p className="mt-2 whitespace-pre-wrap break-words">{r.message}</p>}
+        {r.follow_up_on && (
+          <p className={`mt-3 inline-block rounded-full px-3 py-0.5 text-sm font-semibold ${due ? "bg-accent text-accent-foreground" : "bg-secondary"}`}>
+            {r.status === "done" ? `Follow-up was ${r.follow_up_on}` : followUpLabel(r.follow_up_on, today)}
+          </p>
+        )}
+        <FollowUpEditor r={r} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <a href={gmailReplyUrl(r)} target="_blank" rel="noopener noreferrer" className="btn btn-primary">Reply in Gmail</a>
+        <select aria-label="Status" className={sel} value={r.status} disabled={saving} onChange={(e) => onStatus(r.id, e.target.value)}>
+          {INQUIRY_STATUSES.map((s) => <option key={s.value} value={s.value}>{s.label}</option>)}
+        </select>
+      </div>
+    </li>
+  );
+}
+
+/** Private notes and a follow-up date for one school order; only visible on the admin dashboard. */
+export function FollowUpEditor({ r }: { r: Pick<InquiryRow, "id" | "notes" | "follow_up_on"> }) {
+  const qc = useQueryClient();
+  const [notes, setNotes] = useState(r.notes ?? "");
+  const [date, setDate] = useState(r.follow_up_on ?? "");
+  const [state, setState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const dirty = notes !== (r.notes ?? "") || date !== (r.follow_up_on ?? "");
+
+  async function save(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setState("saving");
+    try {
+      await updateInquiry(r.id, notes.trim(), date);
+      await qc.invalidateQueries({ queryKey: ["admin"] });
+      setState("saved");
+    } catch {
+      setState("error");
+    }
+  }
+
+  return (
+    <form onSubmit={save} className="mt-4 grid gap-3 rounded-xl bg-secondary/60 p-4 sm:grid-cols-[minmax(0,1fr)_auto]">
+      <label className="text-sm font-semibold sm:col-span-2">
+        Notes <span className="font-normal text-muted-foreground">(private: e.g. "Sent quote 10/14, waiting on PO")</span>
+        <textarea
+          value={notes}
+          onChange={(e) => { setNotes(e.target.value); setState("idle"); }}
+          rows={2}
+          maxLength={5000}
+          className="mt-1 w-full rounded-xl border border-input bg-card px-3 py-2 text-base font-normal"
+        />
+      </label>
+      <label className="text-sm font-semibold">
+        Follow up on
+        <input
+          type="date"
+          value={date}
+          onChange={(e) => { setDate(e.target.value); setState("idle"); }}
+          className="mt-1 block rounded-xl border border-input bg-card px-3 py-2 text-base font-normal"
+        />
+      </label>
+      <div className="flex items-end gap-3">
+        <button type="submit" disabled={!dirty || state === "saving"} className="btn btn-primary px-5 py-2 text-base disabled:opacity-50">
+          {state === "saving" ? "Saving…" : "Save"}
+        </button>
+        {state === "saved" && !dirty && <span role="status" className="pb-2 text-sm font-semibold text-success">Saved</span>}
+        {state === "error" && <span role="alert" className="pb-2 text-sm font-semibold text-destructive">Couldn't save. Try again.</span>}
+      </div>
+    </form>
   );
 }
 

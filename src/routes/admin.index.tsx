@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { AlertCircle, BookOpen, Lightbulb, MessageSquare, School, Upload, type LucideIcon } from "lucide-react";
+import { AlertCircle, BookOpen, CalendarClock, Lightbulb, MessageSquare, School, Upload, type LucideIcon } from "lucide-react";
 import { useState } from "react";
 import { sel } from "@/components/admin/panels";
 import { PageTitle } from "@/components/admin/shell";
@@ -27,6 +27,7 @@ function Overview() {
 
   const attention: { icon: LucideIcon; text: string; to: string }[] = [];
   if (t.newInquiries) attention.push({ icon: AlertCircle, text: `${t.newInquiries} new school ${t.newInquiries === 1 ? "inquiry" : "inquiries"}`, to: "/admin/school-orders" });
+  if (t.followUpsDue) attention.push({ icon: CalendarClock, text: `${t.followUpsDue} school ${t.followUpsDue === 1 ? "order needs" : "orders need"} a follow-up`, to: "/admin/school-orders" });
   if (t.newSuggestions) attention.push({ icon: Lightbulb, text: `${t.newSuggestions} new book ${t.newSuggestions === 1 ? "suggestion" : "suggestions"}`, to: "/admin/suggestions" });
 
   const actions: { icon: LucideIcon; label: string; to: string }[] = [

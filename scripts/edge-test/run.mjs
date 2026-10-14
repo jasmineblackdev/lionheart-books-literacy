@@ -125,6 +125,23 @@ const call = async (h, req) => { const r = await h(req); return { status: r.stat
   asAdmin(adminRespond);
   r = await call(h, post({ action: "set_status", kind: "class_set", id: "00000000-0000-4000-8000-000000000000", status: "replied" }, auth));
   check("admin still updates statuses", r.status === 200);
+  const ID = "00000000-0000-4000-8000-000000000000";
+  asAdmin(adminRespond);
+  r = await call(h, post({ action: "update_inquiry", id: ID, notes: "Sent quote 10/14", follow_up_on: "2026-10-20" }, auth));
+  const upd = __db.ops.find((o) => o.table === "class_set_inquiries")?.calls;
+  check("admin saves inquiry notes and follow-up date", r.status === 200 && upd?.find((c) => c[0] === "update")?.[1]?.notes === "Sent quote 10/14" && upd.find((c) => c[0] === "update")[1].follow_up_on === "2026-10-20" && upd.find((c) => c[0] === "eq")?.[2] === ID, JSON.stringify(upd));
+  asAdmin(adminRespond);
+  r = await call(h, post({ action: "update_inquiry", id: ID, notes: "", follow_up_on: "" }, auth));
+  const cleared = __db.ops.find((o) => o.table === "class_set_inquiries")?.calls.find((c) => c[0] === "update")?.[1];
+  check("admin clears notes and follow-up date", r.status === 200 && cleared?.notes === null && cleared?.follow_up_on === null);
+  for (const [name, bad] of [["bad date", { follow_up_on: "next week", notes: null }], ["notes too long", { notes: "x".repeat(5001), follow_up_on: null }], ["bad id", { id: "nope", notes: null, follow_up_on: null }]]) {
+    asAdmin(adminRespond);
+    r = await call(h, post({ action: "update_inquiry", id: ID, ...bad }, auth));
+    check(`admin rejects ${name}`, r.status === 400 && !__db.ops.some((o) => o.table === "class_set_inquiries"));
+  }
+  asAdmin(adminRespond);
+  r = await call(h, post({ action: "list" }, auth));
+  check("admin list includes notes and follow-up dates", __db.ops.find((o) => o.table === "class_set_inquiries")?.calls.find((c) => c[0] === "select")?.[1].includes("notes, follow_up_on"));
   const pre = await h(new Request("http://x", { method: "OPTIONS" }));
   check("admin answers CORS preflight", pre.status === 200 && pre.headers.get("access-control-allow-origin") === "*");
 }

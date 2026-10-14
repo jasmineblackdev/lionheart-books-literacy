@@ -25,8 +25,8 @@ const sale = (r: Partial<SaleRow>): SaleRow => ({
 
 const data: AdminData = {
   inquiries: [
-    { id: "i1", name: "Ann", org: "Oak School", email: "a@o.org", quantity: 30, message: null, status: "new", created_at: daysAgo(2) },
-    { id: "i2", name: "Bo", org: "Elm School", email: "b@e.org", quantity: 10, message: null, status: "done", created_at: daysAgo(60) },
+    { id: "i1", name: "Ann", org: "Oak School", email: "a@o.org", quantity: 30, message: null, status: "new", notes: null, follow_up_on: "2026-10-12", created_at: daysAgo(2) },
+    { id: "i2", name: "Bo", org: "Elm School", email: "b@e.org", quantity: 10, message: null, status: "done", notes: "Delivered", follow_up_on: "2026-08-01", created_at: daysAgo(60) },
   ],
   suggestions: [
     { id: "s1", category: "puzzles", intended_audience: "7-10", idea: "Dinosaur mazes", email: null, marketing_consent: false, status: "new", created_at: daysAgo(3) },
@@ -59,6 +59,7 @@ describe("admin overview", () => {
       suggestionsReceived: 1,
       newInquiries: 1,
       newSuggestions: 1,
+      followUpsDue: 1, // the Done inquiry's old follow-up doesn't count
     });
   });
 
