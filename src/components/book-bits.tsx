@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { recordAmazonClick } from "@/lib/clicks.functions";
+import { isUpcoming } from "@/lib/catalog";
 import type { Book, UpcomingBook } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 
@@ -38,40 +39,45 @@ export function PurchaseButtons({ book }: { book: Book }) {
   );
 }
 
-export function BookCard({ book }: { book: Book }) {
+/** Catalog card for any book: cover, grade, one-line benefit, price (available books only) and View Book. */
+export function BookCard({ book, headingLevel = 3 }: { book: Book | UpcomingBook; headingLevel?: 2 | 3 }) {
+  const upcoming = isUpcoming(book);
+  const H = headingLevel === 2 ? "h2" : "h3";
   return (
-    <article className="card-soft flex flex-col overflow-hidden transition-shadow hover:shadow-lift">
-      <Link to="/books/$slug" params={{ slug: book.slug }} className="block bg-secondary p-6">
+    <article className="group relative flex flex-col overflow-hidden rounded-[1.25rem] border bg-card shadow-soft transition-shadow hover:shadow-lift has-[a:focus-visible]:shadow-lift has-[a:focus-visible]:outline-3 has-[a:focus-visible]:outline-offset-4 has-[a:focus-visible]:outline-ring">
+      <div className="relative bg-sage-soft px-8 pb-5 pt-10 sm:pb-6 sm:pt-8">
+        {upcoming && <ComingSoonBadge className="absolute left-4 top-4 z-10 shadow-soft" />}
         <img
           src={book.cover}
           alt={`${book.title} book cover`}
           width={621}
           height={810}
           loading="lazy"
-          className="mx-auto aspect-[621/810] w-full max-w-xs rounded-lg object-cover shadow-lift"
+          decoding="async"
+          className="mx-auto aspect-[621/810] w-full max-w-[11rem] rounded-md sm:max-w-[15rem] object-cover shadow-lift transition-transform duration-200 group-hover:-translate-y-1 motion-reduce:transition-none motion-reduce:group-hover:translate-y-0"
         />
-      </Link>
+      </div>
       <div className="flex flex-1 flex-col p-6">
         <p className="eyebrow">{book.ages}</p>
-        <h3 className="mt-1 text-2xl font-bold leading-tight">
-          <Link to="/books/$slug" params={{ slug: book.slug }} className="hover:text-terracotta">{book.title}</Link>
-        </h3>
-        <p className="mt-2 text-muted-foreground">{book.tagline}</p>
-        <ul className="mt-4 flex-1 space-y-1.5 text-sm">
-          {book.facts.slice(0, 3).map((f) => (
-            <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>
-          ))}
-        </ul>
-        {book.price && (
-          <p className="mt-auto pt-6 font-display text-xl font-semibold">
-            Paperback {book.price}
-          </p>
-        )}
-        <div className="mt-4 flex flex-col gap-2">
-          <PurchaseButtons book={book} />
-          <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline">
-            See inside {book.short}
+        <H className="mt-1.5 text-xl font-extrabold leading-snug">
+          {/* The title link covers the whole card, so the card is one keyboard stop. */}
+          <Link to="/books/$slug" params={{ slug: book.slug }} className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none">
+            {book.title}
           </Link>
+        </H>
+        <p className="mt-2 flex-1 text-[0.95rem] leading-relaxed text-muted-foreground">{book.tagline}</p>
+        <div className="mt-5 flex items-end justify-between gap-3 border-t pt-4">
+          {upcoming ? (
+            <p className="text-sm font-semibold text-sage-ink">Not available yet</p>
+          ) : (
+            <p className="text-sm leading-tight">
+              <span className="block font-display text-lg font-extrabold">{book.price ? `Paperback ${book.price}` : "Paperback"}</span>
+              <span className="text-muted-foreground">Digital PDF {book.digital.price}</span>
+            </p>
+          )}
+          <span aria-hidden className="btn btn-primary shrink-0 px-4 py-2 text-sm">
+            {upcoming ? "Preview the book" : "View Book"}
+          </span>
         </div>
       </div>
     </article>
@@ -80,33 +86,6 @@ export function BookCard({ book }: { book: Book }) {
 
 export function ComingSoonBadge({ className = "" }: { className?: string }) {
   return <span className={`inline-block rounded-full bg-accent px-3 py-1 text-sm font-bold uppercase tracking-wide text-accent-foreground ${className}`}>Coming soon</span>;
-}
-
-/** Wide card for an announced book that isn't for sale yet. */
-export function ComingSoonCard({ book }: { book: UpcomingBook }) {
-  return (
-    <article className="card-soft grid items-center gap-6 overflow-hidden p-6 sm:grid-cols-[12rem_minmax(0,1fr)] md:p-8">
-      <Link to="/books/$slug" params={{ slug: book.slug }} className="mx-auto block w-40 sm:w-48">
-        <img src={book.cover} alt={`${book.title} book cover`} width={621} height={810} loading="lazy" className="w-full rounded-lg shadow-lift" />
-      </Link>
-      <div className="min-w-0">
-        <ComingSoonBadge />
-        <p className="eyebrow mt-3">{book.ages}</p>
-        <h3 className="mt-1 text-3xl font-bold leading-tight">
-          <Link to="/books/$slug" params={{ slug: book.slug }} className="hover:text-terracotta">{book.title}</Link>
-        </h3>
-        <p className="mt-2 text-muted-foreground">{book.tagline}</p>
-        <ul className="mt-4 space-y-1.5 text-sm">
-          {book.facts.slice(0, 3).map((f) => (
-            <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>
-          ))}
-        </ul>
-        <Link to="/books/$slug" params={{ slug: book.slug }} className="btn btn-outline mt-5">
-          See inside {book.short}
-        </Link>
-      </div>
-    </article>
-  );
 }
 
 export function Faq({ items }: { items: { q: string; a: string }[] }) {

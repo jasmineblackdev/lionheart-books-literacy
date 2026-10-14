@@ -1,65 +1,83 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { BookCard, ComingSoonCard, Faq } from "@/components/book-bits";
+import { BookOpenCheck, PawPrint, School, Sparkles, type LucideIcon } from "lucide-react";
+import { Faq } from "@/components/book-bits";
+import { Catalog } from "@/components/catalog";
 import { books, comingSoon, generalFaqs, pageHead, rory } from "@/lib/site";
 
 export const Route = createFileRoute("/")({
   head: () =>
     pageHead({
-      title: "J. B. Lionheart Books | Alphabet Tracing, Cursive & Animal Coloring Books",
+      title: "J. B. Lionheart Books | Color, Trace & Roar! Workbooks for Ages 3–10",
       description:
-        "Color, Trace & Roar! learning books for kids: an ABC alphabet tracing book (ages 3–6), a cursive handwriting workbook (grades 2–4) and a wild animal coloring field guide. Free sample pages for teachers.",
+        "Color, Trace & Roar! learning books for kids ages 3–10: alphabet tracing, cursive handwriting, a wild animal coloring field guide, and new reading and math workbooks coming soon. Free sample pages for teachers.",
       path: "/",
       image: books[1].cover,
     }),
   component: Index,
 });
 
-const finder = [
-  { age: "Ages 3–6", goal: "Learning letters and first words", book: books[0] },
-  { age: "Grades 2–4", goal: "Learning to read and write cursive", book: books[1] },
-  { age: "Ages 6–10", goal: "Loves animals, coloring and seek-and-find", book: books[2] },
+// Only claims the books themselves support; no testimonials, ratings or sales figures.
+const valueProps: { icon: LucideIcon; title: string; text: string }[] = [
+  { icon: BookOpenCheck, title: "Real skills, one page at a time", text: "Short, clearly structured pages for tracing letters, writing cursive, reading closely and practicing math." },
+  { icon: PawPrint, title: "Real animals, checked facts", text: "Kids learn alongside real animals. The animal facts in our newest books are checked against zoo, government and science sources." },
+  { icon: School, title: "Made for home and classroom", text: "Free printable sample pages, clear grade guidance and class-set inquiries for teachers and homeschoolers." },
+  { icon: Sparkles, title: "Guided by Rory the lion", text: "A friendly lion in a safari vest cheers kids on from the first page to the certificate at the end." },
 ];
 
 function Index() {
   return (
     <>
-      <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:py-20">
-        <div>
-          <p className="eyebrow">Color, Trace & Roar! books</p>
-          <h1 className="mt-3 text-5xl font-extrabold leading-[1.05] md:text-6xl">
-            Little Learners. <span className="text-terracotta">Big Adventures.</span>
-          </h1>
-          <p className="mt-5 max-w-md text-lg text-muted-foreground">
-            Alphabet tracing, cursive practice and wild-animal coloring books, guided by Rory the lion.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link to="/" hash="books" className="btn btn-primary">Explore the Books</Link>
-            <Link to="/teachers" className="btn btn-outline">Get Free Sample Pages</Link>
+      <section className="relative overflow-hidden">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-[1.05fr_1fr] md:pb-24 md:pt-20">
+          <div>
+            <p className="eyebrow">Color, Trace &amp; Roar! workbooks</p>
+            <h1 className="mt-3 text-5xl font-extrabold leading-[1.02] md:text-6xl lg:text-7xl">
+              Little Learners. <span className="text-terracotta">Big Adventures.</span>
+            </h1>
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+              Hands-on workbooks for ages 3–10 that pair real skills (letters, cursive, reading and math) with the animals kids love, guided by Rory the lion.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link to="/" hash="books" className="btn btn-primary px-7">Explore the Books</Link>
+              <Link to="/teachers" className="btn btn-outline">Get Free Sample Pages</Link>
+            </div>
+            <p className="mt-3 text-sm text-muted-foreground">Now available on Amazon.</p>
           </div>
-          <p className="mt-3 text-sm text-muted-foreground">Now available on Amazon.</p>
-        </div>
-        <div className="relative mx-auto h-[270px] w-full max-w-md sm:h-[420px]" aria-hidden>
-          <img src={books[0].cover} alt="" width={621} height={810} className="absolute left-0 top-10 w-[48%] -rotate-6 rounded-lg shadow-lift" />
-          <img src={books[2].cover} alt="" width={621} height={810} className="absolute right-0 top-10 w-[48%] rotate-6 rounded-lg shadow-lift" />
-          <img src={books[1].cover} alt="" width={621} height={810} className="absolute left-1/2 top-0 w-[54%] -translate-x-1/2 rounded-lg shadow-lift" />
+          <div className="relative mx-auto h-[300px] w-full max-w-md sm:h-[440px]" aria-hidden>
+            <div className="absolute inset-x-6 bottom-0 top-8 rounded-[2.5rem] bg-sage-soft" />
+            <div className="absolute -right-4 top-2 size-24 rounded-full bg-honey/60" />
+            <img src={books[0].cover} alt="" width={621} height={810} className="absolute left-0 top-14 w-[46%] -rotate-6 rounded-md shadow-lift" />
+            <img src={books[2].cover} alt="" width={621} height={810} className="absolute right-0 top-14 w-[46%] rotate-6 rounded-md shadow-lift" />
+            <img src={books[1].cover} alt="" width={621} height={810} fetchPriority="high" className="absolute left-1/2 top-2 w-[52%] -translate-x-1/2 rounded-md shadow-lift" />
+          </div>
         </div>
       </section>
 
-      <section id="books" className="scroll-mt-20 bg-secondary px-5 py-16">
+      <section aria-labelledby="why-heading" className="border-y bg-card px-5 py-14">
         <div className="mx-auto max-w-6xl">
-          <p className="eyebrow text-center">The books</p>
-          <h2 className="mt-2 text-center text-4xl font-bold">Three books, one safari of learning</h2>
-          <div className="mt-10 grid gap-8 md:grid-cols-3">
-            {books.map((b) => <BookCard key={b.slug} book={b} />)}
-          </div>
-          {comingSoon.length > 0 && (
-            <div className="mt-14">
-              <h2 className="text-center text-3xl font-bold">Coming soon</h2>
-              <div className="mx-auto mt-6 max-w-4xl space-y-6">
-                {comingSoon.map((b) => <ComingSoonCard key={b.slug} book={b} />)}
-              </div>
-            </div>
-          )}
+          <h2 id="why-heading" className="sr-only">Why families and teachers choose Color, Trace &amp; Roar!</h2>
+          <ul className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {valueProps.map((v) => (
+              <li key={v.title}>
+                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-sage-soft text-sage-ink">
+                  <v.icon aria-hidden className="size-5" />
+                </span>
+                <h3 className="mt-4 text-lg font-extrabold">{v.title}</h3>
+                <p className="mt-1.5 text-[0.95rem] leading-relaxed text-muted-foreground">{v.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <section id="books" aria-labelledby="books-heading" className="scroll-mt-20 bg-secondary px-5 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl">
+          <p className="eyebrow">The books</p>
+          <h2 id="books-heading" className="mt-2 text-4xl font-extrabold md:text-5xl">Find the right book for your learner</h2>
+          <p className="mt-3 max-w-2xl text-lg text-muted-foreground">
+            {books.length} books available now and {comingSoon.length} on the way. Filter by age or what your child is learning.
+          </p>
+          <Catalog />
         </div>
       </section>
 
@@ -72,27 +90,6 @@ function Index() {
           ))}
         </div>
         <img src={books[2].previews[0]?.src} alt={books[2].previews[0]?.alt ?? ""} width={1000} height={450} loading="lazy" className="card-soft mt-4 w-full" />
-      </section>
-
-      <section className="bg-secondary px-5 py-16">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-4xl font-bold">Find the right book for your learner</h2>
-          <ul className="mt-8 space-y-4">
-            {finder.map((f) => (
-              <li key={f.age} className="card-soft grid items-center gap-4 p-5 sm:grid-cols-[auto_minmax(0,1fr)_auto]">
-                <img src={f.book.cover} alt="" width={621} height={810} loading="lazy" className="hidden w-16 rounded sm:block" />
-                <div className="min-w-0">
-                  <p className="eyebrow">{f.age}</p>
-                  <p className="font-display text-xl font-semibold">{f.goal}</p>
-                  <p className="text-muted-foreground">Try {f.book.title}</p>
-                </div>
-                <Link to="/books/$slug" params={{ slug: f.book.slug }} className="btn btn-outline">
-                  View {f.book.short}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
       </section>
 
       <section className="mx-auto max-w-6xl px-5 py-16">
@@ -129,7 +126,7 @@ function Index() {
         <p className="eyebrow">About</p>
         <h2 className="mt-2 text-4xl font-bold">About J. B. Lionheart</h2>
         <p className="mt-4 text-lg text-muted-foreground">
-          J. B. Lionheart creates the Color, Trace & Roar! books: hands-on workbooks that pair real skills, like letters and cursive, with animals kids love. Each book is designed to be printed-page simple, clearly structured and fun enough that kids ask for the next page.
+          J. B. Lionheart creates the Color, Trace & Roar! books: hands-on workbooks that pair real skills, like letters, cursive, reading and math, with animals kids love. Each book is designed to be printed-page simple, clearly structured and fun enough that kids ask for the next page.
         </p>
       </section>
 

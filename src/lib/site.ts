@@ -31,11 +31,30 @@ export const EMAIL = "jblionheartbooks@gmail.com";
 const amazonSearch = (q: string) => `https://www.amazon.com/s?k=${encodeURIComponent(q)}`;
 
 export type Preview = { src: string; alt: string };
+/** Learning categories used by the home page catalog filters. */
+export const CATEGORIES = [
+  { value: "letters", label: "Letters & handwriting" },
+  { value: "reading", label: "Reading" },
+  { value: "math", label: "Math" },
+  { value: "animals", label: "Animals & coloring" },
+] as const;
+export type Category = (typeof CATEGORIES)[number]["value"];
+
+/** Age filters; a book matches when its age range overlaps the group. */
+export const AGE_GROUPS = [
+  { value: "3-6", label: "Ages 3–6", range: [3, 6] },
+  { value: "7-8", label: "Ages 7–8", range: [7, 8] },
+  { value: "9-10", label: "Ages 9–10", range: [9, 10] },
+] as const;
+
 export type Book = {
   slug: "abc-animal-adventure" | "cursive-safari" | "rorys-safari-field-guide";
   title: string;
   short: string;
   ages: string;
+  /** Youngest and oldest age the book is for, from its cover. */
+  ageRange: [number, number];
+  categories: Category[];
   goal: string;
   tagline: string;
   description: string;
@@ -59,6 +78,8 @@ export const books: [Book, Book, Book] = [
     title: "Color, Trace & Roar! ABC Animal Adventure",
     short: "ABC Animal Adventure",
     ages: "Ages 3–6 · Pre-K & Kindergarten",
+    ageRange: [3, 6],
+    categories: ["letters", "animals"],
     goal: "Learn the alphabet",
     tagline: "An alphabet tracing and coloring book with 26 friendly animals.",
     description:
@@ -104,6 +125,8 @@ export const books: [Book, Book, Book] = [
     title: "Cursive Safari",
     short: "Cursive Safari",
     ages: "Grades 2–4 · Ages 7–10",
+    ageRange: [7, 10],
+    categories: ["letters"],
     goal: "Learn cursive handwriting",
     tagline: "A cursive handwriting workbook with Rory the lion.",
     description:
@@ -152,6 +175,8 @@ export const books: [Book, Book, Book] = [
     title: "Rory's Safari Field Guide",
     short: "Rory's Safari Field Guide",
     ages: "Ages 6–10",
+    ageRange: [6, 10],
+    categories: ["animals"],
     goal: "Explore wild animals",
     tagline: "Color, learn and spot 50 real wild animals.",
     description:
@@ -190,7 +215,7 @@ export const books: [Book, Book, Book] = [
 /** A book that's announced but not for sale yet: no prices, purchase links or sales tracking. */
 export type UpcomingBook = Pick<
   Book,
-  "title" | "short" | "ages" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
+  "title" | "short" | "ages" | "ageRange" | "categories" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
 > & { slug: "safari-reading-detectives" | "times-table-safari" | "safari-math-detectives"; status: "coming-soon" };
 
 export const comingSoon: UpcomingBook[] = [
@@ -200,6 +225,8 @@ export const comingSoon: UpcomingBook[] = [
     title: "Safari Reading Detectives",
     short: "Safari Reading Detectives",
     ages: "Grades 2–3 · Ages 7–9",
+    ageRange: [7, 9],
+    categories: ["reading", "animals"],
     goal: "Build reading comprehension",
     tagline: "40 true animal cases to read, solve and color.",
     description:
@@ -241,6 +268,8 @@ export const comingSoon: UpcomingBook[] = [
     title: "Times Table Safari",
     short: "Times Table Safari",
     ages: "Grades 3–4 · Ages 8–10",
+    ageRange: [8, 10],
+    categories: ["math"],
     goal: "Learn the times tables",
     tagline: "Count it. Color it. Remember it! Every multiplication fact from ×0 to ×10.",
     description:
@@ -283,6 +312,8 @@ export const comingSoon: UpcomingBook[] = [
     title: "Safari Math Detectives",
     short: "Safari Math Detectives",
     ages: "Grades 2–3 · Ages 7–9",
+    ageRange: [7, 9],
+    categories: ["math"],
     goal: "Solve math word problems",
     tagline: "Find the clues. Do the math! 40 true animal cases to solve with math.",
     description:
