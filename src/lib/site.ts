@@ -19,6 +19,10 @@ import timesCover from "@/assets/times-table-cover.jpg";
 import timesMeet from "@/assets/times-table-meet-the-facts.jpg";
 import timesMaze from "@/assets/times-table-skip-count-maze.jpg";
 import timesCode from "@/assets/times-table-crack-the-code.jpg";
+import mathCover from "@/assets/math-detectives-cover.jpg";
+import mathCaseFile from "@/assets/math-detectives-case-file.jpg";
+import mathSolve from "@/assets/math-detectives-solve-the-case.jpg";
+import mathMeasure from "@/assets/math-detectives-feather-measuring.jpg";
 
 export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
@@ -187,7 +191,7 @@ export const books: [Book, Book, Book] = [
 export type UpcomingBook = Pick<
   Book,
   "title" | "short" | "ages" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
-> & { slug: "safari-reading-detectives" | "times-table-safari"; status: "coming-soon" };
+> & { slug: "safari-reading-detectives" | "times-table-safari" | "safari-math-detectives"; status: "coming-soon" };
 
 export const comingSoon: UpcomingBook[] = [
   {
@@ -271,6 +275,47 @@ export const comingSoon: UpcomingBook[] = [
       { q: "What grade is Times Table Safari for?", a: "Grades 3–4 (ages 8–10). Third graders in North Carolina are expected to multiply fluently with factors up to 10, and this book gives practice in those skills." },
       { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
       { q: "How long does it take?", a: "One page a day, about 10–15 minutes, finishes the book in about 12 weeks." },
+    ],
+  },
+  {
+    slug: "safari-math-detectives",
+    status: "coming-soon",
+    title: "Safari Math Detectives",
+    short: "Safari Math Detectives",
+    ages: "Grades 2–3 · Ages 7–9",
+    goal: "Solve math word problems",
+    tagline: "Find the clues. Do the math! 40 true animal cases to solve with math.",
+    description:
+      "Join Rory the lion on 40 math cases built on true animal facts, from ostrich eggs to orb-weaver webs. Kids use a simple 4-step method (clues, question, plan, solve & check) to crack word problems, then finish each case with a hands-on Detective Activity.",
+    facts: [
+      "40 cases in 8 units: a Case File, Solve the Case and a Detective Activity",
+      "Add, subtract, place value, multiply and divide",
+      "Time, money, measuring, graphs, area and fractions",
+      "Real clocks, coins, rulers, arrays and number lines",
+      "A Detective Review after every unit",
+      "Answer key, math tool kit and a certificate",
+    ],
+    parentBenefits: [
+      "A simple 4-step method: clues, question, plan, solve & check",
+      "Read each case aloud together and praise the plan, not just the answer",
+      "A math tool kit with a number line, hundreds chart, arrays and bar models",
+    ],
+    teacherBenefits: [
+      "Units 1–4 practice second-grade skills and stretch into third grade; Units 5–8 practice third-grade skills",
+      "Practice in the math skills North Carolina students are tested on, with the standards listed for each unit",
+      "Four multiple-choice questions and a written problem in every case",
+    ],
+    pages: "141 pages",
+    cover: mathCover,
+    previews: [
+      { src: mathCaseFile, alt: "Safari Math Detectives Case 1, The Ostrich Egg Line: true ostrich facts, a word problem and boxes for clues, question, plan, and solve and check" },
+      { src: mathSolve, alt: "Safari Math Detectives Solve the Case page: four multiple-choice word problems and a two-step problem about ostriches" },
+      { src: mathMeasure, alt: "Safari Math Detectives Feather Measuring activity: measure four feathers with an inch ruler and answer questions" },
+    ],
+    faqs: [
+      { q: "What grade is Safari Math Detectives for?", a: "Grades 2–3 (ages 7–9). Units 1–4 practice second-grade skills and stretch into third grade; Units 5–8 practice third-grade skills." },
+      { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
+      { q: "How should I print the measuring pages?", a: "Print or copy them at 100% size so the lines match a real ruler." },
     ],
   },
 ];

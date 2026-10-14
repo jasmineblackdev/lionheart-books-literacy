@@ -32,6 +32,14 @@ describe("coming-soon books", () => {
     }
   });
 
+  it("lists Safari Math Detectives as coming soon from its PDFs", () => {
+    expect(getUpcomingBook("safari-math-detectives")).toMatchObject({ status: "coming-soon", ages: "Grades 2–3 · Ages 7–9", pages: "141 pages" });
+    expect(getBook("safari-math-detectives")).toBeUndefined();
+    for (const f of ["math-detectives-cover.jpg", "math-detectives-case-file.jpg", "math-detectives-solve-the-case.jpg", "math-detectives-feather-measuring.jpg"]) {
+      expect(existsSync(path.join(process.cwd(), "src/assets", f))).toBe(true);
+    }
+  });
+
   it("has its own book page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     for (const b of comingSoon) expect(router.matchRoutes(`/books/${b.slug}`).at(-1)?.routeId).toBe("/books/$slug");
