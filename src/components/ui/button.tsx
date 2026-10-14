@@ -9,9 +9,9 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        bookAmazon: "rounded-full bg-accent font-display font-semibold text-accent-foreground shadow-soft hover:bg-accent/90",
-        bookDigital: "rounded-full border-2 border-primary font-display font-semibold text-primary hover:bg-secondary",
-        bookUnavailable: "rounded-full bg-accent font-display font-semibold text-accent-foreground shadow-soft disabled:opacity-100",
+        bookAmazon: "rounded-full bg-accent font-display font-extrabold text-accent-foreground shadow-soft hover:bg-accent/90",
+        bookDigital: "rounded-full border-2 border-primary font-display font-extrabold text-primary hover:bg-secondary",
+        bookUnavailable: "rounded-full bg-accent font-display font-extrabold text-accent-foreground shadow-soft disabled:opacity-100",
         default: "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         destructive: "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:

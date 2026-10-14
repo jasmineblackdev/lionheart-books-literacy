@@ -4,7 +4,7 @@ import { isUpcoming } from "@/lib/catalog";
 import type { Book, UpcomingBook } from "@/lib/site";
 import { Button } from "@/components/ui/button";
 
-export function AmazonButton({ book, className = "" }: { book: Book; className?: string }) {
+export function AmazonButton({ book, className = "", showPrice = true }: { book: Book; className?: string; showPrice?: boolean }) {
   if (!book.paperbackAvailable) {
     return <Button disabled variant="bookUnavailable" size="purchase" className={className}>Paperback coming soon to Amazon</Button>;
   }
@@ -17,25 +17,9 @@ export function AmazonButton({ book, className = "" }: { book: Book; className?:
       onClick={() => void recordAmazonClick({ data: { slug: book.slug } }).catch(() => {})}
       aria-label={`Buy ${book.short} on Amazon${book.price ? ` – ${book.price}` : ""}`}
     >
-      Buy on Amazon{book.price && ` – ${book.price}`}
+      Buy on Amazon{showPrice && book.price && ` – ${book.price}`}
     </a>
     </Button>
-  );
-}
-
-export function PurchaseButtons({ book }: { book: Book }) {
-  return (
-    <div className="grid grid-cols-2 items-start gap-3">
-      <AmazonButton book={book} className="w-full" />
-      <div className="min-w-0">
-        <Button asChild variant="bookDigital" size="purchase" className="w-full">
-          <a href={book.digital.url} target="_blank" rel="noopener noreferrer" aria-label={`${book.short}: Digital PDF – ${book.digital.price}`}>
-            Digital PDF – {book.digital.price}
-          </a>
-        </Button>
-        <p className="mt-2 text-xs leading-relaxed text-muted-foreground">Instant download. Print at home or trace on a tablet with a stylus.</p>
-      </div>
-    </div>
   );
 }
 
