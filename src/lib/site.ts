@@ -240,7 +240,7 @@ export const comingSoon: UpcomingBook[] = [
     goal: "Learn the times tables",
     tagline: "Count it. Color it. Remember it! Every multiplication fact from ×0 to ×10.",
     description:
-      "Join Rory the lion on a 10-stop safari through every times table, from ×0 to ×10. At each Safari Stop, kids meet a real animal (zebra legs for ×4, octopus arms for ×8), learn the facts with a memory trick, and practice until the facts stick.",
+      "Join Rory the lion on a 10-stop safari through every times table, from ×0 to ×10. At each Safari Stop, kids meet a real animal (zebra legs for ×4, octopus arms for ×8), learn the facts with a memory trick, and practice until the facts stick. Great for third and fourth graders at home, in the classroom or over the summer.",
     facts: [
       "10 Safari Stops covering every fact from ×0 to ×10",
       "Easy facts first, then the tricky ones, one stop at a time",
