@@ -15,6 +15,10 @@ import detectivesCover from "@/assets/reading-detectives-cover.jpg";
 import detectivesPassage from "@/assets/reading-detectives-passage.jpg";
 import detectivesQuestions from "@/assets/reading-detectives-questions.jpg";
 import detectivesColor from "@/assets/reading-detectives-color-by-clue.jpg";
+import timesCover from "@/assets/times-table-cover.jpg";
+import timesMeet from "@/assets/times-table-meet-the-facts.jpg";
+import timesMaze from "@/assets/times-table-skip-count-maze.jpg";
+import timesCode from "@/assets/times-table-crack-the-code.jpg";
 
 export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
@@ -183,7 +187,7 @@ export const books: [Book, Book, Book] = [
 export type UpcomingBook = Pick<
   Book,
   "title" | "short" | "ages" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
-> & { slug: "safari-reading-detectives"; status: "coming-soon" };
+> & { slug: "safari-reading-detectives" | "times-table-safari"; status: "coming-soon" };
 
 export const comingSoon: UpcomingBook[] = [
   {
@@ -225,6 +229,48 @@ export const comingSoon: UpcomingBook[] = [
       { q: "What grade is Safari Reading Detectives for?", a: "Grades 2–3 (ages 7–9). Passages start short in Unit 1 and grow a little longer unit by unit." },
       { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
       { q: "What should kids write with?", a: "A pencil and colored pencils. Markers may bleed through the page." },
+    ],
+  },
+  {
+    slug: "times-table-safari",
+    status: "coming-soon",
+    title: "Times Table Safari",
+    short: "Times Table Safari",
+    ages: "Grades 3–4 · Ages 8–10",
+    goal: "Learn the times tables",
+    tagline: "Count it. Color it. Remember it! Every multiplication fact from ×0 to ×10.",
+    description:
+      "Join Rory the lion on a 10-stop safari through every times table, from ×0 to ×10. At each Safari Stop, kids meet a real animal (zebra legs for ×4, octopus arms for ×8), learn the facts with a memory trick, and practice until the facts stick.",
+    facts: [
+      "10 Safari Stops covering every fact from ×0 to ×10",
+      "Easy facts first, then the tricky ones, one stop at a time",
+      "Skip-count mazes, mystery pictures and secret-code jokes",
+      "Story problems and a timed Speed Round in every stop",
+      "3 mixed reviews and a times table chart with a pattern hunt",
+      "Safari Race board game, bingo cards and 48 cut-out flash cards",
+      "Answer key and a Times Table Explorer certificate",
+    ],
+    parentBenefits: [
+      "One page a day, about 10–15 minutes, finishes the book in about 12 weeks",
+      "Redo each Speed Round on three different days and celebrate a faster time",
+      "Board game, bingo and flash cards make an easy family game night",
+    ],
+    teacherBenefits: [
+      "Facts taught easiest first (×0, ×1, ×2, ×10, ×5), then used to build the harder ones",
+      "Practice in the multiplication skills North Carolina students are tested on",
+      "Copy pages for one household or one classroom",
+    ],
+    pages: "76 pages",
+    cover: timesCover,
+    previews: [
+      { src: timesMeet, alt: "Times Table Safari Stop 2 Meet the ×2 Facts page: counting ostrich legs in groups, skip-counting tracks, a memory trick and an array to color" },
+      { src: timesMaze, alt: "Times Table Safari Skip-Count Maze: a number grid where kids find the one path that counts by 2s" },
+      { src: timesCode, alt: "Times Table Safari Crack the Code page: solve ×2 facts to decode an ostrich joke, plus a fact family triangle" },
+    ],
+    faqs: [
+      { q: "What grade is Times Table Safari for?", a: "Grades 3–4 (ages 8–10). Third graders in North Carolina are expected to multiply fluently with factors up to 10, and this book gives practice in those skills." },
+      { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
+      { q: "How long does it take?", a: "One page a day, about 10–15 minutes, finishes the book in about 12 weeks." },
     ],
   },
 ];

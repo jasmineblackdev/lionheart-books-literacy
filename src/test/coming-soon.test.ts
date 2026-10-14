@@ -21,11 +21,19 @@ describe("coming-soon books", () => {
     for (const f of ["reading-detectives-cover.jpg", "reading-detectives-passage.jpg", "reading-detectives-questions.jpg", "reading-detectives-color-by-clue.jpg"]) {
       expect(existsSync(path.join(process.cwd(), "src/assets", f))).toBe(true);
     }
-    expect(comingSoon[0]!.previews).toHaveLength(3);
+    for (const b of comingSoon) expect(b.previews).toHaveLength(3);
+  });
+
+  it("lists Times Table Safari as coming soon with the grades printed on its cover", () => {
+    expect(getUpcomingBook("times-table-safari")).toMatchObject({ status: "coming-soon", ages: "Grades 3–4 · Ages 8–10", pages: "76 pages" });
+    expect(getBook("times-table-safari")).toBeUndefined();
+    for (const f of ["times-table-cover.jpg", "times-table-meet-the-facts.jpg", "times-table-skip-count-maze.jpg", "times-table-crack-the-code.jpg"]) {
+      expect(existsSync(path.join(process.cwd(), "src/assets", f))).toBe(true);
+    }
   });
 
   it("has its own book page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
-    expect(router.matchRoutes("/books/safari-reading-detectives").at(-1)?.routeId).toBe("/books/$slug");
+    for (const b of comingSoon) expect(router.matchRoutes(`/books/${b.slug}`).at(-1)?.routeId).toBe("/books/$slug");
   });
 });
