@@ -63,7 +63,7 @@ export function SiteFooter() {
           <p className="mt-2 opacity-85">Color, Trace & Roar! learning books for curious kids.</p>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">The books</h2>
+          <h2 className="text-lg font-extrabold">The books</h2>
           <ul className="mt-3 space-y-2 opacity-90">
             {books.map((b) => (
               <li key={b.slug}>
@@ -79,7 +79,7 @@ export function SiteFooter() {
           </ul>
         </div>
         <div>
-          <h2 className="text-lg font-semibold">Contact</h2>
+          <h2 className="text-lg font-extrabold">Contact</h2>
           <a href={`mailto:${EMAIL}`} className="mt-3 inline-block font-bold underline underline-offset-4">{EMAIL}</a>
           <ul className="mt-4 space-y-2 opacity-90">
             <li><Link to="/teachers" className="hover:underline">Teachers & Schools</Link></li>

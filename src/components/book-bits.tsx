@@ -53,7 +53,7 @@ export function BookCard({ book }: { book: Book }) {
       </Link>
       <div className="flex flex-1 flex-col p-6">
         <p className="eyebrow">{book.ages}</p>
-        <h3 className="mt-1 text-2xl font-semibold leading-tight">
+        <h3 className="mt-1 text-2xl font-bold leading-tight">
           <Link to="/books/$slug" params={{ slug: book.slug }} className="hover:text-terracotta">{book.title}</Link>
         </h3>
         <p className="mt-2 text-muted-foreground">{book.tagline}</p>
@@ -92,7 +92,7 @@ export function ComingSoonCard({ book }: { book: UpcomingBook }) {
       <div className="min-w-0">
         <ComingSoonBadge />
         <p className="eyebrow mt-3">{book.ages}</p>
-        <h3 className="mt-1 text-3xl font-semibold leading-tight">
+        <h3 className="mt-1 text-3xl font-bold leading-tight">
           <Link to="/books/$slug" params={{ slug: book.slug }} className="hover:text-terracotta">{book.title}</Link>
         </h3>
         <p className="mt-2 text-muted-foreground">{book.tagline}</p>

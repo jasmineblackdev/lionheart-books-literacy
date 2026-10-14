@@ -56,7 +56,7 @@ export function ClassSetForm() {
   if (status === "sent") {
     return (
       <div role="status" className="card-soft p-6">
-        <h3 className="text-2xl font-semibold text-success">Thanks! Your inquiry was sent</h3>
+        <h3 className="text-2xl font-bold text-success">Thanks! Your inquiry was sent</h3>
         <p className="mt-2">We'll reply to the email address you gave us with options for your class set.</p>
         <button className="btn btn-outline mt-4" onClick={() => setStatus("idle")}>Send another inquiry</button>
       </div>

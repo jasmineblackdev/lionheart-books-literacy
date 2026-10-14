@@ -26,7 +26,7 @@ function Index() {
       <section className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:py-20">
         <div>
           <p className="eyebrow">Color, Trace & Roar! books</p>
-          <h1 className="mt-3 text-5xl font-bold leading-[1.05] md:text-6xl">
+          <h1 className="mt-3 text-5xl font-extrabold leading-[1.05] md:text-6xl">
             Little Learners. <span className="text-terracotta">Big Adventures.</span>
           </h1>
           <p className="mt-5 max-w-md text-lg text-muted-foreground">

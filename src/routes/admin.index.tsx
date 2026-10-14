@@ -58,7 +58,7 @@ function Overview() {
       <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
         <div className="space-y-6">
           <section className="rounded-2xl border bg-card p-5">
-            <h2 className="text-xl font-semibold">Needs attention</h2>
+            <h2 className="text-xl font-extrabold">Needs attention</h2>
             {attention.length ? (
               <ul className="mt-3 space-y-2">
                 {attention.map((a) => (
@@ -76,7 +76,7 @@ function Overview() {
           </section>
 
           <section className="rounded-2xl border bg-card p-5">
-            <h2 className="text-xl font-semibold">Quick actions</h2>
+            <h2 className="text-xl font-extrabold">Quick actions</h2>
             <ul className="mt-3 grid gap-2">
               {actions.map((a, i) => (
                 <li key={a.label}>
@@ -91,7 +91,7 @@ function Overview() {
         </div>
 
         <section className="rounded-2xl border bg-card p-5">
-          <h2 className="text-xl font-semibold">Recent activity</h2>
+          <h2 className="text-xl font-extrabold">Recent activity</h2>
           {activity.length ? (
             <ul className="mt-3 divide-y">
               {activity.map((a, i) => (

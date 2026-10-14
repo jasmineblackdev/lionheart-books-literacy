@@ -19,13 +19,13 @@ function SettingsPage() {
       <PageTitle title="Settings" subtitle="Your account and how the site is connected" />
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border bg-card p-5">
-          <h2 className="text-xl font-semibold">Account</h2>
+          <h2 className="text-xl font-extrabold">Account</h2>
           <p className="mt-2 text-sm">Signed in as <strong>{email}</strong></p>
           <ChangePassword />
         </section>
 
         <section className="rounded-2xl border bg-card p-5">
-          <h2 className="text-xl font-semibold">Connections</h2>
+          <h2 className="text-xl font-extrabold">Connections</h2>
           <dl className="mt-3 space-y-3 text-sm">
             <div>
               <dt className="font-semibold">Form emails</dt>
@@ -73,7 +73,7 @@ function ChangePassword() {
 
   return (
     <form onSubmit={onSubmit} className="mt-5 grid gap-3">
-      <h3 className="font-semibold">Change password</h3>
+      <h3 className="font-bold">Change password</h3>
       <label className="text-sm font-semibold">
         New password
         <input name="password" type="password" autoComplete="new-password" minLength={8} required className={field} />

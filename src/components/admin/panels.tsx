@@ -33,7 +33,7 @@ export function SignIn() {
   return (
     <section className="mx-auto max-w-md px-5 py-16">
       <a href="/" className="text-sm font-semibold underline-offset-4 hover:underline">← Back to website</a>
-      <h1 className="mt-4 text-4xl font-bold">Admin sign in</h1>
+      <h1 className="mt-4 text-4xl font-extrabold">Admin sign in</h1>
       <p className="mt-2 text-muted-foreground">Private dashboard for J. B. Lionheart Books.</p>
       <form onSubmit={onSubmit} className="card-soft mt-6 grid gap-4 p-6">
         {error && <p role="alert" className="text-sm font-semibold text-destructive">{error}</p>}
@@ -165,7 +165,7 @@ export function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }
       <div className="mt-6 grid gap-4 md:grid-cols-3">
         {summary.map((s) => (
           <div key={s.book.slug} className="card-soft p-5">
-            <h2 className="text-xl font-semibold">{s.book.short}</h2>
+            <h2 className="text-xl font-extrabold">{s.book.short}</h2>
             <dl className="mt-3 space-y-2 text-sm">
               <div className="flex justify-between gap-2"><dt>Digital PDFs sold (Payhip)</dt><dd className="font-semibold">{s.digitalUnits}</dd></div>
               <div className="flex justify-between gap-2"><dt>Digital revenue</dt><dd className="font-semibold">{formatCents(s.digitalCents)}</dd></div>
@@ -182,7 +182,7 @@ export function Sales({ sales, clicks }: { sales: SaleRow[]; clicks: ClickData }
 
       <KdpUpload />
 
-      <h2 className="mt-8 text-2xl font-semibold">Recent sales</h2>
+      <h2 className="mt-8 text-2xl font-extrabold">Recent sales</h2>
       <ul className="mt-3 space-y-2">
         {recent.map((r) => (
           <li key={r.id} className="card-soft flex flex-wrap items-center justify-between gap-2 p-4 text-sm">
@@ -231,7 +231,7 @@ export function KdpUpload() {
 
   return (
     <div className="card-soft mt-6 p-5">
-      <h2 className="text-xl font-semibold">Upload a KDP report</h2>
+      <h2 className="text-xl font-extrabold">Upload a KDP report</h2>
       <p className="mt-1 text-sm text-muted-foreground">
         In KDP, go to Reports → Orders → Download report, then choose the .xlsx file here. Upload a new one whenever you want the paperback numbers updated.
       </p>
@@ -296,13 +296,13 @@ export function Suggestions({ rows, saving, onStatus }: { rows: SuggestionRow[];
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="card-soft p-5">
-          <h2 className="text-xl font-semibold">By category</h2>
+          <h2 className="text-xl font-extrabold">By category</h2>
           <ul className="mt-2 space-y-1 text-sm">
             {CATEGORIES.map((c) => <li key={c.value}>{c.label}: <strong>{filtered.filter((r) => r.category === c.value).length}</strong></li>)}
           </ul>
         </div>
         <div className="card-soft p-5">
-          <h2 className="text-xl font-semibold">Recurring themes</h2>
+          <h2 className="text-xl font-extrabold">Recurring themes</h2>
           {themes.length ? (
             <ul className="mt-2 flex flex-wrap gap-2">
               {themes.map(([w, n]) => (
@@ -337,7 +337,7 @@ export function Suggestions({ rows, saving, onStatus }: { rows: SuggestionRow[];
 export function Msg({ title, children, onSignOut }: { title: string; children: ReactNode; onSignOut: () => void }) {
   return (
     <section className="mx-auto max-w-lg px-5 py-20 text-center">
-      <h1 className="text-3xl font-bold">{title}</h1>
+      <h1 className="text-3xl font-extrabold">{title}</h1>
       <p className="mt-3 text-muted-foreground">{children}</p>
       <button className="btn btn-outline mt-6" onClick={onSignOut}>Sign out</button>
     </section>

@@ -53,7 +53,7 @@ function BookPage() {
           <Link to="/" hash="books" className="text-sm font-semibold underline underline-offset-4">← All books</Link>
           {upcoming && <div className="mt-4"><ComingSoonBadge /></div>}
           <p className="eyebrow mt-4">{b.ages}</p>
-          <h1 className="mt-2 text-4xl font-bold leading-tight md:text-5xl">{b.title}</h1>
+          <h1 className="mt-2 text-4xl font-extrabold leading-tight md:text-5xl">{b.title}</h1>
           <p className="mt-4 text-lg">{b.description}</p>
           {b.pages && <p className="mt-4 text-sm text-muted-foreground">{b.pages}</p>}
           {upcoming ? (
@@ -73,7 +73,7 @@ function BookPage() {
           {!upcoming && b.sample && (
             <a href={b.sample.url} download className="btn btn-outline mt-3 w-full sm:w-auto">Download free sample pages</a>
           )}
-          <h2 className="mt-10 text-2xl font-semibold">What's inside</h2>
+          <h2 className="mt-10 text-2xl font-extrabold">What's inside</h2>
           <ul className="mt-3 space-y-2">
             {b.facts.map((f) => <li key={f} className="flex gap-2"><span aria-hidden className="text-terracotta">●</span>{f}</li>)}
           </ul>
@@ -94,7 +94,7 @@ function BookPage() {
       <section className="mx-auto grid max-w-6xl gap-6 px-5 py-14 md:grid-cols-2">
         {[{ t: "For parents", l: b.parentBenefits }, { t: "For teachers & homeschoolers", l: b.teacherBenefits }].map((s) => (
           <div key={s.t} className="card-soft p-6">
-            <h2 className="text-2xl font-semibold">{s.t}</h2>
+            <h2 className="text-2xl font-extrabold">{s.t}</h2>
             <ul className="mt-3 space-y-2">{s.l.map((x) => <li key={x}>✓ {x}</li>)}</ul>
           </div>
         ))}

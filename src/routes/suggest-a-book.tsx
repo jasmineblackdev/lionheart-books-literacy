@@ -68,14 +68,14 @@ function SuggestPage() {
   return (
     <section className="mx-auto max-w-2xl px-5 py-14">
       <p className="eyebrow">Help us choose our next adventure</p>
-      <h1 className="mt-2 text-4xl font-bold md:text-5xl">Suggest a Book</h1>
+      <h1 className="mt-2 text-4xl font-extrabold md:text-5xl">Suggest a Book</h1>
       <p className="mt-4 text-lg text-muted-foreground">
         Your ideas help inspire our next books. Every suggestion is read and may shape future publishing decisions, though we can't promise any one idea will become a book.
       </p>
 
       {status === "sent" ? (
         <div role="status" className="card-soft mt-8 p-6">
-          <h2 className="text-2xl font-semibold text-success">Thank you!</h2>
+          <h2 className="text-2xl font-extrabold text-success">Thank you!</h2>
           <p className="mt-2">Thank you for helping shape our next adventure! Your idea has been submitted for consideration.</p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row">
             <button className="btn btn-outline" onClick={() => setStatus("idle")}>Suggest another idea</button>

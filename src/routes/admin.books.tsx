@@ -29,7 +29,7 @@ function BooksPage() {
               <img src={b.cover} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="w-32 rounded-lg shadow-soft" />
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl font-semibold">{b.title}</h2>
+                  <h2 className="text-2xl font-extrabold">{b.title}</h2>
                   <span className={`rounded-full px-3 py-0.5 text-sm font-semibold ${b.paperbackAvailable ? "bg-primary text-primary-foreground" : "bg-accent text-accent-foreground"}`}>
                     {b.paperbackAvailable ? "Published" : "Paperback coming soon"}
                   </span>
@@ -78,14 +78,14 @@ function BooksPage() {
       </ul>
       {comingSoon.length > 0 && (
         <>
-          <h2 className="mt-10 text-2xl font-semibold">Coming soon</h2>
+          <h2 className="mt-10 text-2xl font-extrabold">Coming soon</h2>
           <ul className="mt-4 space-y-4">
             {comingSoon.map((b) => (
               <li key={b.slug} className="grid gap-5 rounded-2xl border bg-card p-5 sm:grid-cols-[8rem_minmax(0,1fr)]">
                 <img src={b.cover} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="w-32 rounded-lg shadow-soft" />
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h3 className="text-2xl font-semibold">{b.title}</h3>
+                    <h3 className="text-2xl font-bold">{b.title}</h3>
                     <span className="rounded-full bg-accent px-3 py-0.5 text-sm font-semibold text-accent-foreground">Coming soon</span>
                   </div>
                   <p className="mt-1 text-muted-foreground">{b.ages} · {b.goal} · {b.pages}</p>
