@@ -14,6 +14,18 @@ const nav = [
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const menuButton = useRef<HTMLButtonElement>(null);
+  // Escape closes the phone menu and returns focus to the Menu button.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      setOpen(false);
+      menuButton.current?.focus();
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
   // Publish the header's real height so section anchors (scroll-mt-header) clear it.
   useEffect(() => {
     const el = headerRef.current;
@@ -40,6 +52,8 @@ export function SiteHeader() {
           </ul>
         </nav>
         <button
+          ref={menuButton}
+          type="button"
           className="btn btn-outline px-4 py-2 text-base xl:hidden"
           aria-expanded={open}
           aria-controls="mobile-nav"
