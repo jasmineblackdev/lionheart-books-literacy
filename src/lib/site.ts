@@ -23,6 +23,10 @@ import mathCover from "@/assets/math-detectives-cover.jpg";
 import mathCaseFile from "@/assets/math-detectives-case-file.jpg";
 import mathSolve from "@/assets/math-detectives-solve-the-case.jpg";
 import mathMeasure from "@/assets/math-detectives-feather-measuring.jpg";
+import numbersCover from "@/assets/numbers-cover.jpg";
+import numbersEight from "@/assets/numbers-number-8.jpg";
+import numbersPractice from "@/assets/numbers-practice-8.jpg";
+import numbersAdding from "@/assets/numbers-adding-within-10.jpg";
 
 export const SITE_URL = "https://lionheart-books-literacy.vercel.app";
 export const EMAIL = "jblionheartbooks@gmail.com";
@@ -216,7 +220,7 @@ export const books: [Book, Book, Book] = [
 export type UpcomingBook = Pick<
   Book,
   "title" | "short" | "ages" | "ageRange" | "categories" | "goal" | "tagline" | "description" | "facts" | "parentBenefits" | "teacherBenefits" | "pages" | "cover" | "previews" | "faqs"
-> & { slug: "safari-reading-detectives" | "times-table-safari" | "safari-math-detectives"; status: "coming-soon" };
+> & { slug: "safari-reading-detectives" | "times-table-safari" | "safari-math-detectives" | "numbers-animal-adventure"; status: "coming-soon" };
 
 export const comingSoon: UpcomingBook[] = [
   {
@@ -348,6 +352,49 @@ export const comingSoon: UpcomingBook[] = [
       { q: "What grade is Safari Math Detectives for?", a: "Second and third graders (ages 7–9). Units 1–4 practice second-grade skills and step up into third grade; Units 5–8 practice third-grade skills." },
       { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
       { q: "How should I print the measuring pages?", a: "Print or copy them at 100% size so the lines match a real ruler." },
+    ],
+  },
+  {
+    slug: "numbers-animal-adventure",
+    status: "coming-soon",
+    title: "Color, Trace & Roar! Numbers Animal Adventure",
+    short: "Numbers Animal Adventure",
+    ages: "Ages 3–6 · Pre-K & Kindergarten",
+    ageRange: [3, 6],
+    categories: ["math", "animals"],
+    goal: "Learn numbers 0 to 20",
+    tagline: "Count, trace and color numbers 0 to 20 with an animal friend for every number.",
+    description:
+      "Every number from 0 to 20 has an animal friend, and every fun fact uses the number: an octopus with 8 arms, a ladybug with 7 spots, a crab with 10 legs. Kids trace each number with start dots and arrows, trace the word, color the animal and count, count, count!",
+    facts: [
+      "21 cute animals to color, one for each number 0 to 20",
+      "Trace numbers and number words with start dots and arrows",
+      "Ten frames, teen numbers, counting to 100 and by tens",
+      "First adding and taking away within 10, plus a number maze",
+      "Number tracker, answer key and a Number Explorer certificate",
+      "Every fact checked against zoo, government and science sources",
+    ],
+    parentBenefits: [
+      "One page a day is plenty: count out loud together and point to each animal",
+      "Start dots and arrows show exactly where each number begins",
+      "Celebrate every finished page on the Number Tracker",
+    ],
+    teacherBenefits: [
+      "Practice in the counting skills taught in North Carolina kindergarten",
+      "Counting to 20 and by tens to 100, teen numbers as ten and some more, and adding and taking away within 10",
+      "Copies are for one household; email us about classroom pricing",
+    ],
+    pages: "56 pages",
+    cover: numbersCover,
+    previews: [
+      { src: numbersEight, alt: "Numbers Animal Adventure page 8 • Eight: trace the number 8 with start dots, trace the word, color an octopus with 8 arms and fill a ten frame" },
+      { src: numbersPractice, alt: "Numbers Animal Adventure Practice 8 page: trace and write 8, circle the group with 8 octopuses, color exactly 8 and count dots" },
+      { src: numbersAdding, alt: "Numbers Animal Adventure More Adding page: count two groups of animals and write how many in all" },
+    ],
+    faqs: [
+      { q: "What age is Numbers Animal Adventure for?", a: "Ages 3–6, which fits Pre-K and kindergarten." },
+      { q: "When can I buy it?", a: "It's coming soon. Paperback and digital links will appear on this page as soon as it's available." },
+      { q: "Can my child use markers?", a: "Crayons or colored pencils work best. Markers may bleed through the page." },
     ],
   },
 ];

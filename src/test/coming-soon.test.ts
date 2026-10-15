@@ -40,6 +40,14 @@ describe("coming-soon books", () => {
     }
   });
 
+  it("lists Numbers Animal Adventure as coming soon from its PDFs", () => {
+    expect(getUpcomingBook("numbers-animal-adventure")).toMatchObject({ status: "coming-soon", ages: "Ages 3–6 · Pre-K & Kindergarten", ageRange: [3, 6], pages: "56 pages" });
+    expect(getBook("numbers-animal-adventure")).toBeUndefined();
+    for (const f of ["numbers-cover.jpg", "numbers-number-8.jpg", "numbers-practice-8.jpg", "numbers-adding-within-10.jpg"]) {
+      expect(existsSync(path.join(process.cwd(), "src/assets", f))).toBe(true);
+    }
+  });
+
   it("has its own book page", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
     for (const b of comingSoon) expect(router.matchRoutes(`/books/${b.slug}`).at(-1)?.routeId).toBe("/books/$slug");

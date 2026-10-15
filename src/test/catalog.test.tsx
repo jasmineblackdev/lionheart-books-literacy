@@ -24,7 +24,8 @@ describe("catalog filters", () => {
 
   it("filters the real book list by age and learning category", () => {
     expect(slugs(filterBooks(books, "3-6", ""))).toEqual(["abc-animal-adventure", "rorys-safari-field-guide"]);
-    expect(slugs(filterBooks(comingSoon, "", "math"))).toEqual(["times-table-safari", "safari-math-detectives"]);
+    expect(slugs(filterBooks(comingSoon, "", "math"))).toEqual(["times-table-safari", "safari-math-detectives", "numbers-animal-adventure"]);
+    expect(slugs(filterBooks(comingSoon, "3-6", ""))).toEqual(["numbers-animal-adventure"]);
     expect(slugs(filterBooks([...books, ...comingSoon], "9-10", "letters"))).toEqual(["cursive-safari"]);
   });
 
@@ -56,7 +57,7 @@ describe("home catalog", () => {
     render(<Catalog />);
     fireEvent.click(screen.getByRole("button", { name: "Math" }));
     expect(screen.getByRole("button", { name: "Math" })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText("2 books match")).toBeInTheDocument();
+    expect(screen.getByText(`${comingSoon.filter((b) => b.categories.includes("math")).length} books match`)).toBeInTheDocument();
     expect(screen.getByText("No available books match these filters yet.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Times Table Safari" })).toHaveAttribute("href", "/books/times-table-safari");
     fireEvent.click(screen.getByRole("button", { name: "Clear filters" }));
