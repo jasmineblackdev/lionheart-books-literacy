@@ -10,6 +10,8 @@ export type SuggestionRow = Omit<Tables["book_suggestions"]["Row"], "ip_hash">;
 // notes/follow_up_on were added in supabase/setup/2026-10-12-school-order-notes.sql; the
 // generated Database types predate them, so they're declared here.
 export type InquiryRow = Omit<Tables["class_set_inquiries"]["Row"], "ip_hash"> & {
+  /** Book slugs or "unsure" (supabase/migrations/20261015000000_class_set_books.sql); null on older inquiries. */
+  books?: string[] | null;
   notes: string | null;
   /** YYYY-MM-DD */
   follow_up_on: string | null;

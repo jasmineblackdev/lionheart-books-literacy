@@ -2,6 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { INQUIRY_STATUSES, gmailReplyUrl, importSales, updateInquiry, type InquiryRow, type SuggestionRow } from "@/lib/admin-api";
+import { bookNames } from "@/lib/class-sets";
 import { followUpLabel, isFollowUpDue, todayIso } from "@/lib/follow-ups";
 import { parseKdpReport } from "@/lib/kdp";
 import { bookForSale, formatCents, summarize, type ClickData, type SaleRow } from "@/lib/sales";
@@ -87,6 +88,7 @@ function InquiryCard({ r, today, saving, onStatus }: { r: InquiryRow; today: str
         <p className="text-sm text-muted-foreground">{new Date(r.created_at).toLocaleString()}</p>
         <p className="mt-1 font-display text-xl font-semibold">{r.org} · {r.quantity} books</p>
         <p className="mt-1">{r.name} · <a href={`mailto:${r.email}`} className="underline">{r.email}</a></p>
+        {r.books && r.books.length > 0 && <p className="mt-1.5 text-sm"><span className="font-semibold">Books:</span> {bookNames(r.books)}</p>}
         {r.message && <p className="mt-2 whitespace-pre-wrap break-words">{r.message}</p>}
         {r.follow_up_on && (
           <p className={`mt-3 inline-block rounded-full px-3 py-0.5 text-sm font-semibold ${due ? "bg-accent text-accent-foreground" : "bg-secondary"}`}>
