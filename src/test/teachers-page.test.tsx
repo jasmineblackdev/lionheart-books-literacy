@@ -36,7 +36,7 @@ describe("Teacher Resource Center", () => {
     for (const b of books.filter((x) => x.sample)) {
       const s = b.sample!;
       const card = screen.getByRole("article", { name: b.short });
-      const dl = within(card).getByRole("link", { name: `Download free ${b.short} sample PDF, ${s.pageCount} pages, ${s.sizeMB} MB` });
+      const dl = within(card).getByRole("link", { name: `Download free PDF: ${b.short} sample, ${s.pageCount} pages, ${s.sizeMB} MB` });
       expect(dl).toHaveAttribute("href", s.url);
       expect(dl).toHaveAttribute("download");
       expect(within(card).getAllByRole("button", { name: /^Enlarge page/ })).toHaveLength(s.pages.length);

@@ -75,7 +75,7 @@ function Teachers() {
                     {more > 0 && <p className="mt-2 text-sm text-muted-foreground">+ {more} more {more === 1 ? "page" : "pages"} in the PDF. Select a page to enlarge it.</p>}
                   </div>
                   <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-t pt-5">
-                    <a href={s.url} download aria-label={`Download free ${b.short} sample PDF, ${s.pageCount} pages, ${s.sizeMB} MB`} className="btn btn-primary">
+                    <a href={s.url} download aria-label={`Download free PDF: ${b.short} sample, ${s.pageCount} pages, ${s.sizeMB} MB`} className="btn btn-primary">
                       <Download aria-hidden className="size-5" /> Download free PDF
                     </a>
                     <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
