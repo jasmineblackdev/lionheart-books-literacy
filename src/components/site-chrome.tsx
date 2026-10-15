@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { books, comingSoon, EMAIL } from "@/lib/site";
 
 const nav = [
@@ -13,8 +13,19 @@ const nav = [
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
+  // Publish the header's real height so section anchors (scroll-mt-header) clear it.
+  useEffect(() => {
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const set = () => document.documentElement.style.setProperty("--header-h", `${el.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+    <header ref={headerRef} className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
       <div className="mx-auto grid max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-3">
         <Link to="/" className="min-w-0 font-display text-xl font-bold text-primary">
           <span className="truncate">J. B. Lionheart <span className="text-terracotta">Books</span></span>

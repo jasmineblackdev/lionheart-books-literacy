@@ -69,6 +69,10 @@ export function BookCard({ book, headingLevel = 3 }: { book: Book | UpcomingBook
   );
 }
 
+export function AvailableBadge({ className = "" }: { className?: string }) {
+  return <span className={`inline-block rounded-full bg-primary px-3 py-1 text-sm font-bold uppercase tracking-wide text-primary-foreground ${className}`}>Available now</span>;
+}
+
 export function ComingSoonBadge({ className = "" }: { className?: string }) {
   return <span className={`inline-block rounded-full bg-accent px-3 py-1 text-sm font-bold uppercase tracking-wide text-accent-foreground ${className}`}>Coming soon</span>;
 }

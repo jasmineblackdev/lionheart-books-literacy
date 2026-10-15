@@ -5,7 +5,7 @@ import { responsive } from "@/lib/images";
 
 /** Interior-page thumbnails that open a full-size viewer (native <dialog>: focus is
  *  trapped, Esc closes, arrow keys move between pages). */
-export function Gallery({ images, title }: { images: Preview[]; title: string }) {
+export function Gallery({ images, title, compact = false }: { images: Preview[]; title: string; compact?: boolean }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [index, setIndex] = useState(0);
   const count = images.length;
@@ -22,16 +22,16 @@ export function Gallery({ images, title }: { images: Preview[]; title: string })
   if (!count) return null;
   return (
     <>
-      <ul className={`grid gap-4 ${count > 1 ? "grid-cols-2 sm:grid-cols-3" : ""}`}>
+      <ul className={`grid ${compact ? "grid-cols-3 gap-2 sm:gap-3" : `gap-4 ${count > 1 ? "grid-cols-2 sm:grid-cols-3" : ""}`}`}>
         {images.map((p, i) => (
           <li key={p.src}>
             <button
               type="button"
               onClick={() => open(i)}
               aria-label={`Enlarge page ${i + 1} of ${count}: ${p.alt}`}
-              className="group block w-full overflow-hidden rounded-2xl border bg-card p-2 shadow-soft transition-shadow hover:shadow-lift"
+              className={`group block w-full overflow-hidden border bg-card shadow-soft transition-shadow hover:shadow-lift ${compact ? "rounded-xl p-1" : "rounded-2xl p-2"}`}
             >
-              <img {...responsive(p.src, "(min-width: 640px) 360px, 45vw")} alt="" loading="lazy" decoding="async" className="w-full rounded-xl transition-transform duration-200 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
+              <img {...responsive(p.src, compact ? "(min-width: 1024px) 160px, 30vw" : "(min-width: 640px) 360px, 45vw")} alt="" width={935} height={1210} loading="lazy" decoding="async" className="w-full rounded-xl transition-transform duration-200 group-hover:scale-[1.02] motion-reduce:transition-none motion-reduce:group-hover:scale-100" />
             </button>
           </li>
         ))}

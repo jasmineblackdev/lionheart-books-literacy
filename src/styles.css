@@ -193,3 +193,9 @@
   text-transform: uppercase;
   color: var(--color-terracotta);
 }
+
+/* Section anchors land just below the sticky header. --header-h is measured by SiteHeader;
+   the fallback matches the header's usual height. */
+@utility scroll-mt-header {
+  scroll-margin-top: calc(var(--header-h, 4.5rem) + 1rem);
+}

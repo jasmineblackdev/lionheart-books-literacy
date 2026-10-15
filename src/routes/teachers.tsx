@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Download, FileText, GraduationCap, School } from "lucide-react";
-import { ComingSoonBadge } from "@/components/book-bits";
+import { AvailableBadge, ComingSoonBadge } from "@/components/book-bits";
+import { Gallery } from "@/components/gallery";
+import { responsive } from "@/lib/images";
 import { ClassSetForm } from "@/components/class-set-form";
 import { books, CATEGORIES, comingSoon, pageHead } from "@/lib/site";
-import { responsive } from "@/lib/images";
 
 export const Route = createFileRoute("/teachers")({
   head: () =>
@@ -51,43 +52,53 @@ function Teachers() {
         </nav>
       </section>
 
-      <section id="samples" aria-labelledby="samples-heading" className="scroll-mt-20 bg-secondary px-5 py-14 md:py-16">
+      <section id="samples" aria-labelledby="samples-heading" className="scroll-mt-header bg-secondary px-5 py-14 md:py-16">
         <div className="mx-auto max-w-6xl">
           <h2 id="samples-heading" className="text-3xl font-extrabold md:text-4xl">Free sample pages</h2>
           <p className="mt-2 max-w-2xl text-muted-foreground">Real pages you can print and copy freely for home or classroom use (not for resale).</p>
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {withSamples.map((b) => (
-              <article key={b.slug} className="flex flex-col rounded-[1.25rem] border bg-card p-6 shadow-soft">
-                <div className="flex gap-5">
-                  <img {...responsive(b.cover, "96px")} alt={`${b.title} cover`} width={621} height={810} loading="lazy" className="h-auto w-24 shrink-0 self-start rounded-md shadow-soft" />
-                  <div className="min-w-0">
-                    <p className="eyebrow">{b.ages}</p>
-                    <h3 className="mt-1 text-2xl font-extrabold leading-tight">{b.short}</h3>
-                    <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-                      <FileText aria-hidden className="size-4" /> {b.sample!.label}
-                    </p>
+          <div className="mt-8 grid gap-6 lg:grid-cols-2">
+            {withSamples.map((b) => {
+              const s = b.sample!;
+              const more = s.pageCount - s.pages.length;
+              return (
+                <article key={b.slug} aria-labelledby={`sample-${b.slug}`} className="flex flex-col rounded-[1.25rem] border bg-card p-6 shadow-soft">
+                  <div className="flex items-start gap-4">
+                    <img {...responsive(b.cover, "64px")} alt="" width={621} height={810} loading="lazy" className="h-auto w-16 shrink-0 rounded-md shadow-soft" />
+                    <div className="min-w-0">
+                      <p className="eyebrow">{b.ages}</p>
+                      <h3 id={`sample-${b.slug}`} className="mt-1 text-2xl font-extrabold leading-tight">{b.short}</h3>
+                    </div>
                   </div>
-                </div>
-                <p className="mt-5 flex-1 leading-relaxed"><strong>What's included:</strong> {b.sample!.contents}</p>
-                <div className="mt-5 flex flex-wrap items-center gap-4">
-                  <a href={b.sample!.url} download className="btn btn-primary">
-                    <Download aria-hidden className="size-5" /> Download free pages
-                  </a>
-                  <Link to="/books/$slug" params={{ slug: b.slug }} className="font-semibold underline underline-offset-4">
-                    About {b.short}
-                  </Link>
-                </div>
-              </article>
-            ))}
+                  <p className="mt-4 leading-relaxed"><strong>What's included:</strong> {s.contents}</p>
+                  <div className="mt-4">
+                    <Gallery images={s.pages} title={`${b.short} free sample`} compact />
+                    {more > 0 && <p className="mt-2 text-sm text-muted-foreground">+ {more} more {more === 1 ? "page" : "pages"} in the PDF. Select a page to enlarge it.</p>}
+                  </div>
+                  <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 border-t pt-5">
+                    <a href={s.url} download aria-label={`Download free ${b.short} sample PDF, ${s.pageCount} pages, ${s.sizeMB} MB`} className="btn btn-primary">
+                      <Download aria-hidden className="size-5" /> Download free PDF
+                    </a>
+                    <span className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                      <FileText aria-hidden className="size-4" /> {s.pageCount} pages · {s.sizeMB} MB
+                    </span>
+                    <Link to="/books/$slug" params={{ slug: b.slug }} className="text-sm font-semibold underline underline-offset-4">
+                      About {b.short}
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      <section id="grades" aria-labelledby="grades-heading" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-14 md:py-16">
+      <section id="grades" aria-labelledby="grades-heading" className="mx-auto max-w-6xl scroll-mt-header px-5 py-14 md:py-16">
         <h2 id="grades-heading" className="text-3xl font-extrabold md:text-4xl">Grade guide</h2>
-        <p className="mt-2 text-muted-foreground">Every Color, Trace &amp; Roar! book by age, grade and skill.</p>
-        <div className="mt-6 overflow-x-auto rounded-[1.25rem] border bg-card shadow-soft">
-          <table className="w-full min-w-[40rem] text-left">
+        <p className="mt-2 text-muted-foreground">Every Color, Trace &amp; Roar! book by age, grade and skill. Available books first.</p>
+
+        {/* Desktop and tablet: one table */}
+        <div className="mt-6 hidden overflow-hidden rounded-[1.25rem] border bg-card shadow-soft md:block">
+          <table className="w-full text-left">
             <caption className="sr-only">Color, Trace &amp; Roar! books by age, grade, skill and availability</caption>
             <thead className="bg-secondary text-sm">
               <tr>
@@ -99,23 +110,46 @@ function Teachers() {
             </thead>
             <tbody className="divide-y">
               {allBooks.map((b) => (
-                <tr key={b.slug}>
+                <tr key={b.slug} className={"status" in b ? "" : "bg-sage-soft/40"}>
                   <th scope="row" className="px-5 py-4 font-semibold">
-                    <Link to="/books/$slug" params={{ slug: b.slug }} className="underline-offset-4 hover:underline">{b.short}</Link>
+                    <Link to="/books/$slug" params={{ slug: b.slug }} className="flex items-center gap-3 underline-offset-4 hover:underline">
+                      <img {...responsive(b.cover, "40px")} alt="" width={621} height={810} loading="lazy" className="h-auto w-10 shrink-0 rounded shadow-soft" />
+                      {b.short}
+                    </Link>
                   </th>
                   <td className="px-5 py-4">{b.ages}</td>
                   <td className="px-5 py-4">
                     {b.goal}
                     <span className="block text-sm text-muted-foreground">{b.categories.map(categoryLabel).join(", ")}</span>
                   </td>
-                  <td className="px-5 py-4">
-                    {"status" in b ? <ComingSoonBadge /> : <span className="font-semibold text-success">Available now</span>}
-                  </td>
+                  <td className="px-5 py-4">{"status" in b ? <ComingSoonBadge /> : <AvailableBadge />}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
+
+        {/* Phones: stacked cards, no sideways scrolling */}
+        <ul className="mt-6 space-y-3 md:hidden" aria-label="Color, Trace & Roar! books by age, grade, skill and availability">
+          {allBooks.map((b) => (
+            <li key={b.slug} className={`flex gap-4 rounded-[1.25rem] border p-4 shadow-soft ${"status" in b ? "bg-card" : "bg-sage-soft/40"}`}>
+              <img {...responsive(b.cover, "64px")} alt="" width={621} height={810} loading="lazy" className="h-auto w-16 shrink-0 self-start rounded-md shadow-soft" />
+              <div className="min-w-0 flex-1">
+                {"status" in b ? <ComingSoonBadge className="text-xs" /> : <AvailableBadge className="text-xs" />}
+                <h3 className="mt-2 text-lg font-extrabold leading-snug">
+                  <Link to="/books/$slug" params={{ slug: b.slug }} className="underline-offset-4 hover:underline">{b.short}</Link>
+                </h3>
+                <dl className="mt-1.5 space-y-1 text-sm">
+                  <div><dt className="sr-only">Ages and grades</dt><dd>{b.ages}</dd></div>
+                  <div>
+                    <dt className="sr-only">Practices</dt>
+                    <dd className="text-muted-foreground">{b.goal} · {b.categories.map(categoryLabel).join(", ")}</dd>
+                  </div>
+                </dl>
+              </div>
+            </li>
+          ))}
+        </ul>
 
         <div className="mt-10 grid gap-6 md:grid-cols-3">
           <div className="rounded-[1.25rem] border bg-card p-6 shadow-soft">
@@ -133,7 +167,7 @@ function Teachers() {
         </div>
       </section>
 
-      <section id="class-sets" aria-labelledby="class-sets-heading" className="scroll-mt-20 bg-secondary px-5 py-14 md:py-16">
+      <section id="class-sets" aria-labelledby="class-sets-heading" className="scroll-mt-header bg-secondary px-5 py-14 md:py-16">
         <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
           <div>
             <h2 id="class-sets-heading" className="text-3xl font-extrabold md:text-4xl">Class-set inquiry</h2>

@@ -11,6 +11,12 @@ import curAlpha from "@/assets/cursive-alphabet.jpg";
 import guidePages from "@/assets/field-guide-pages.jpg";
 import sampleAbc from "@/assets/sample-abc.pdf";
 import sampleCursive from "@/assets/sample-cursive.pdf";
+import sampleAbcP1 from "@/assets/sample-abc-p1.jpg";
+import sampleAbcP2 from "@/assets/sample-abc-p2.jpg";
+import sampleAbcP3 from "@/assets/sample-abc-p3.jpg";
+import sampleCurP1 from "@/assets/sample-cursive-p1.jpg";
+import sampleCurP2 from "@/assets/sample-cursive-p2.jpg";
+import sampleCurP3 from "@/assets/sample-cursive-p3.jpg";
 import detectivesCover from "@/assets/reading-detectives-cover.jpg";
 import detectivesPassage from "@/assets/reading-detectives-passage.jpg";
 import detectivesQuestions from "@/assets/reading-detectives-questions.jpg";
@@ -72,7 +78,8 @@ export type Book = {
   cover: string;
   amazon: string;
   previews: Preview[];
-  sample?: { url: string; label: string; contents: string };
+  /** Free sample PDF. pageCount and sizeMB are checked against the real file by src/test/samples.test.ts. */
+  sample?: { url: string; label: string; contents: string; pageCount: number; sizeMB: string; pages: Preview[] };
   faqs: { q: string; a: string }[];
 };
 
@@ -118,6 +125,13 @@ export const books: [Book, Book, Book] = [
       url: sampleAbc,
       label: "ABC Animal Adventure sample pages (PDF, 5 pages)",
       contents: "A name page with how-to-use steps plus A is for Alligator, L is for Lion and Z is for Zebra.",
+      pageCount: 5,
+      sizeMB: "0.9",
+      pages: [
+        { src: sampleAbcP1, alt: "Free sample page: A is for Alligator, with a dotted Aa to trace, an alligator to color and the word to trace" },
+        { src: sampleAbcP2, alt: "Free sample page: L is for Lion, with a dotted Ll to trace, a lion to color and the word to trace" },
+        { src: sampleAbcP3, alt: "Free sample page: Z is for Zebra, with a dotted Zz to trace, a zebra to color and the word to trace" },
+      ],
     },
     faqs: [
       { q: "What age is ABC Animal Adventure for?", a: "Ages 3–6, which fits preschool, pre-K and kindergarten prep." },
@@ -168,6 +182,13 @@ export const books: [Book, Book, Book] = [
       url: sampleCursive,
       label: "Cursive Safari sample pages (PDF, 6 pages)",
       contents: "Meet Rory, Letter i, Join it: i, Capital A and the full cursive alphabet reference.",
+      pageCount: 6,
+      sizeMB: "1.1",
+      pages: [
+        { src: sampleCurP1, alt: "Free sample page: Meet Rory, with the words lion and Antelope written in cursive" },
+        { src: sampleCurP2, alt: "Free sample page: Letter i with numbered stroke steps, a start dot and rows to trace and write" },
+        { src: sampleCurP3, alt: "Free sample page: Join it: i, with joined i's to trace and copy and an impala to color" },
+      ],
     },
     faqs: [
       { q: "What grade is Cursive Safari for?", a: "Grades 2–4 (ages 7–10)." },

@@ -86,7 +86,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="books" aria-labelledby="books-heading" className="scroll-mt-20 bg-secondary px-5 py-16 md:py-20">
+      <section id="books" aria-labelledby="books-heading" className="scroll-mt-header bg-secondary px-5 py-16 md:py-20">
         <div className="mx-auto max-w-6xl">
           <p className="eyebrow">The books</p>
           <h2 id="books-heading" className="mt-2 text-4xl font-extrabold md:text-5xl">Find the right book for your learner</h2>
@@ -138,7 +138,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="about" className="mx-auto max-w-3xl scroll-mt-20 px-5 py-16 text-center">
+      <section id="about" className="mx-auto max-w-3xl scroll-mt-header px-5 py-16 text-center">
         <p className="eyebrow">About</p>
         <h2 className="mt-2 text-4xl font-bold">About J. B. Lionheart</h2>
         <p className="mt-4 text-lg text-muted-foreground">

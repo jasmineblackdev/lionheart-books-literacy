@@ -9,7 +9,7 @@ export const PURCHASE_PANEL_ID = "buy";
 /** Paperback (Amazon) and digital (Payhip) choices for an available book, using its exact links. */
 export function PurchasePanel({ book }: { book: Book }) {
   return (
-    <section id={PURCHASE_PANEL_ID} aria-labelledby="buy-heading" className="scroll-mt-24 rounded-[1.25rem] border bg-card p-4 shadow-soft sm:p-5">
+    <section id={PURCHASE_PANEL_ID} aria-labelledby="buy-heading" className="scroll-mt-header rounded-[1.25rem] border bg-card p-4 shadow-soft sm:p-5">
       <h2 id="buy-heading" className="sr-only">Buy {book.short}</h2>
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="flex flex-col rounded-2xl bg-secondary p-4">
