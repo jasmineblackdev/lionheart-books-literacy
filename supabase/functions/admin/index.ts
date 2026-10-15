@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
         .limit(1000),
       db
         .from("class_set_inquiries")
-        .select("id, name, org, email, quantity, message, status, notes, follow_up_on, created_at")
+        .select("id, name, org, email, quantity, message, books, status, notes, follow_up_on, created_at")
         .order("created_at", { ascending: false })
         .limit(1000),
       db

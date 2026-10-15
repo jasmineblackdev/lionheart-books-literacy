@@ -12,6 +12,15 @@ const json = (body: unknown, status = 200) =>
 const CATEGORIES = ["coloring", "handwriting", "puzzles", "animal-facts", "other"];
 const AUDIENCES = ["3-6", "7-10", "11+", "adults", "teachers"];
 const BOOK_SLUGS = ["abc-animal-adventure", "cursive-safari", "rorys-safari-field-guide"];
+// Books a class-set inquiry may name: everything for sale or coming soon, or "unsure".
+const INQUIRY_BOOKS = [
+  ...BOOK_SLUGS,
+  "safari-reading-detectives",
+  "times-table-safari",
+  "safari-math-detectives",
+  "numbers-animal-adventure",
+  "unsure",
+];
 const str = (v: unknown, min: number, max: number) =>
   typeof v === "string" && v.trim().length >= min && v.length <= max;
 
@@ -37,14 +46,20 @@ function suggestionRow(r: Record<string, unknown>) {
 
 function classSetRow(r: Record<string, unknown>) {
   if (!str(r.name, 1, 200) || !str(r.org, 1, 200) || !str(r.email, 3, 255)) return null;
-  if (!Number.isInteger(r.quantity) || (r.quantity as number) < 1 || (r.quantity as number) > 100000) return null;
+  if (!Number.isInteger(r.quantity) || (r.quantity as number) < 1 || (r.quantity as number) > 10000) return null;
   if (r.message != null && r.message !== "" && !str(r.message, 0, 2000)) return null;
+  let books: string[] | null = null;
+  if (r.books != null) {
+    if (!Array.isArray(r.books) || r.books.length > 10 || !r.books.every((b) => INQUIRY_BOOKS.includes(b as string))) return null;
+    books = [...new Set(r.books as string[])];
+  }
   return {
     name: (r.name as string).trim(),
     org: (r.org as string).trim(),
     email: (r.email as string).trim(),
     quantity: r.quantity as number,
     message: (r.message as string) || null,
+    books,
   };
 }
 

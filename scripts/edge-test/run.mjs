@@ -61,6 +61,15 @@ const call = async (h, req) => { const r = await h(req); return { status: r.stat
   reset({ FORMS_SECRET: "s3cret" });
   r = await call(h, post({ type: "class_set", row: { name: "A", org: "B", email: "a@b.co", quantity: 3, message: "" }, ip_hash: "ip1" }, { "x-forms-secret": "s3cret" }));
   check("forms still saves class-set inquiries", r.status === 200 && __db.ops.some((o) => o.table === "class_set_inquiries"));
+  reset({ FORMS_SECRET: "s3cret" });
+  r = await call(h, post({ type: "class_set", row: { name: "A", org: "B", email: "a@b.co", quantity: 30, books: ["cursive-safari", "times-table-safari", "cursive-safari", "unsure"] }, ip_hash: "ip1" }, { "x-forms-secret": "s3cret" }));
+  const csIns = __db.ops.filter((o) => o.table === "class_set_inquiries").flatMap((o) => o.calls).find((c) => c[0] === "insert")?.[1];
+  check("forms saves chosen books, de-duplicated", r.status === 200 && JSON.stringify(csIns?.books) === JSON.stringify(["cursive-safari", "times-table-safari", "unsure"]), JSON.stringify(csIns));
+  for (const [name, row] of [["unknown book", { books: ["not-a-book"] }], ["books not a list", { books: "cursive-safari" }], ["quantity over 10,000", { quantity: 10001 }]]) {
+    reset({ FORMS_SECRET: "s3cret" });
+    r = await call(h, post({ type: "class_set", row: { name: "A", org: "B", email: "a@b.co", quantity: 3, ...row } }, { "x-forms-secret": "s3cret" }));
+    check(`forms rejects ${name}`, r.status === 400);
+  }
 }
 
 // ---------- payhip-webhook ----------
